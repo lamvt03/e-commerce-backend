@@ -1,9 +1,8 @@
-package com.ecommerce.user;
+package com.ecommerce.user.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -25,16 +24,23 @@ public class User implements UserDetails {
 
     @Column(unique = true)
     private String mobile;
-    private String pass;
+
+    private String password;
+
+    @Enumerated(EnumType.STRING)
+    private UserRole role = UserRole.ADMIN;
+
+    private boolean isEnable = true;
+    private boolean isNonLocked = true;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
+        return Collections.singleton(role);
     }
 
     @Override
     public String getPassword() {
-        return pass;
+        return password;
     }
 
     @Override
@@ -49,7 +55,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return isNonLocked;
     }
 
     @Override
@@ -59,6 +65,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return isEnable;
     }
 }
