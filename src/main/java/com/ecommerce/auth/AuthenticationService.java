@@ -4,7 +4,7 @@ import com.ecommerce.exception.ResourceNotFoundException;
 import com.ecommerce.jwt.JwtUtil;
 import com.ecommerce.auth.model.AuthenticationRequest;
 import com.ecommerce.auth.model.AuthenticationResponse;
-import com.ecommerce.user.User;
+import com.ecommerce.user.model.User;
 import com.ecommerce.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;

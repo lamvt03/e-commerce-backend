@@ -1,5 +1,6 @@
-package com.ecommerce.exception;
+package com.ecommerce.exception.handler;
 
+import com.ecommerce.exception.DuplicateResourceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -9,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
-public class AppExceptionHandler {
+public class GlobalAdvice {
 
     @ExceptionHandler(DuplicateResourceException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
