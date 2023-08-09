@@ -1,5 +1,7 @@
 package com.ecommerce.product;
 
+import com.ecommerce.product.model.FilterDTO;
+import com.ecommerce.product.model.PaginationDTO;
 import com.ecommerce.product.model.Product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +36,25 @@ public class ProductController {
             @RequestBody Product p){
         return ResponseEntity.ok(productService.updateProductById(id, p));
     }
+
+    @GetMapping("filter")
+    public ResponseEntity<?> getFilteredProducts(
+            @RequestParam(required = false) String brand,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) Double maxPrice,
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int limit,
+            @RequestParam(defaultValue = "asc", name = "sort") String sortDirection,
+            @RequestParam(defaultValue = "price") String sortBy
+
+            ){
+        FilterDTO filterDTO = new FilterDTO(brand, category, maxPrice, minPrice);
+        PaginationDTO paginationDTO = new PaginationDTO(page, limit, sortDirection, sortBy);
+        List<Product> filteredProducts = productService.filterProducts(filterDTO, paginationDTO);
+        return ResponseEntity.ok(filteredProducts);
+    }
+
     @GetMapping("all")
     public List<Product> getAllProducts (){
         return productService.findAllProducts();

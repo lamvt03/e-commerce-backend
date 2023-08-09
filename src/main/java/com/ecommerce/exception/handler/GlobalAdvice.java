@@ -2,6 +2,7 @@ package com.ecommerce.exception.handler;
 
 import com.ecommerce.exception.DuplicateResourceException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -19,6 +20,16 @@ public class GlobalAdvice {
         errMap.put("msg", ex.getMessage());
         errMap.put("code", String.valueOf(HttpStatus.CONFLICT.value()));
         errMap.put("status", HttpStatus.CONFLICT.getReasonPhrase());
+        return errMap;
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    Map<String, String> handleBadCredentialsException(BadCredentialsException ex){
+        Map<String, String> errMap = new HashMap<>();
+        errMap.put("msg", "Username or password wrong");
+        errMap.put("code", String.valueOf(HttpStatus.BAD_REQUEST.value()));
+        errMap.put("status", HttpStatus.BAD_REQUEST.getReasonPhrase());
         return errMap;
     }
 

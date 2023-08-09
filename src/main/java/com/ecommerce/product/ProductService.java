@@ -1,9 +1,15 @@
 package com.ecommerce.product;
 
 import com.ecommerce.exception.ResourceNotFoundException;
+import com.ecommerce.product.model.FilterDTO;
+import com.ecommerce.product.model.PaginationDTO;
 import com.ecommerce.product.model.Product;
 import com.github.slugify.Slugify;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -54,5 +60,18 @@ public class ProductService {
         p.setSlug(slug);
         p.setId(id);
         return productRepository.save(p);
+    }
+
+    public List<Product> filterProducts(FilterDTO filter, PaginationDTO pagination){
+        Pageable pageable = getPageable(pagination);
+        return productRepository.findWithFilter(filter, pageable);
+    }
+
+    private Pageable getPageable(PaginationDTO paginationDTO){
+        Sort sort = Sort.by(
+                Sort.Direction.fromString(paginationDTO.sortDirection()),
+                paginationDTO.sortBy()
+        );
+        return PageRequest.of(paginationDTO.page(), paginationDTO.limit(), sort);
     }
 }
