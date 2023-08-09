@@ -17,7 +17,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         Map<String, String> errMap = new HashMap<>();
         errMap.put("code", String.valueOf(HttpStatus.UNAUTHORIZED.value()));
-        errMap.put("msg", "JWT token not found");
+        errMap.put("msg", "JWT token getting wrong");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.getWriter().write(new ObjectMapper().writeValueAsString(errMap));
     }
