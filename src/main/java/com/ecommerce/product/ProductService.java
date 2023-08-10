@@ -55,10 +55,13 @@ public class ProductService {
     }
 
     public Product updateProductById(Long id, Product p){
+        Product oldProduct = findProductById(id);
         String slug = Slugify.builder().transliterator(true).lowerCase(true).build()
                 .slugify(p.getTitle());
         p.setSlug(slug);
         p.setId(id);
+        p.setCreatedBy(oldProduct.getCreatedBy());
+        p.setCreatedAt(oldProduct.getCreatedAt());
         return productRepository.save(p);
     }
 
