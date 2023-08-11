@@ -5,6 +5,7 @@ import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -33,6 +34,8 @@ public class User implements UserDetails {
     private boolean isEnable = true;
     private boolean isNonLocked = true;
 
+    private String resetPasswordOTP;
+    private LocalDateTime resetPasswordExpired;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(role);

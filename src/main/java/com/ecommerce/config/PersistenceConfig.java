@@ -14,7 +14,7 @@ import java.util.Optional;
 public class PersistenceConfig {
 
     @Bean
-    public AuditorAware<String> getCurrentAuditor(){
+    AuditorAware<String> getCurrentAuditor(){
         return new AuditorAware<String>() {
             @Override
             public Optional<String> getCurrentAuditor() {

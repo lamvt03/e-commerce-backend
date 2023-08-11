@@ -27,7 +27,7 @@ public class GlobalAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     Map<String, String> handleBadCredentialsException(BadCredentialsException ex){
         Map<String, String> errMap = new HashMap<>();
-        errMap.put("msg", "Username or password wrong");
+        errMap.put("msg", ex.getMessage());
         errMap.put("code", String.valueOf(HttpStatus.BAD_REQUEST.value()));
         errMap.put("status", HttpStatus.BAD_REQUEST.getReasonPhrase());
         return errMap;

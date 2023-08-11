@@ -1,11 +1,15 @@
 package com.ecommerce.user.controller;
 
-import com.ecommerce.user.model.User;
-import com.ecommerce.user.model.UserDTO;
-import com.ecommerce.user.model.UserRegistration;
+import com.ecommerce.user.model.*;
 import com.ecommerce.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -36,5 +40,22 @@ public class UserController {
         return u;
     }
 
+    @PostMapping("change-password")
+    public UserDTO changePassword(
+            @AuthenticationPrincipal User authenticatedUser,
+            @RequestBody UserPasswordChange userPasswordChange
+    ){
+        return userService.changePassword(authenticatedUser, userPasswordChange);
+    }
+    @PostMapping("forgot-password")
+    public String forgotPassword(@RequestBody UserPasswordForgot userPasswordForgot){
+        return userService.handleForgotPassword(userPasswordForgot.email());
+    }
+    @PostMapping("reset-password")
+    public String resetPassword(
+            @RequestBody UserPasswordReset userPasswordReset
+    ){
+        return userService.handleResetPassword(userPasswordReset);
+    }
 
 }

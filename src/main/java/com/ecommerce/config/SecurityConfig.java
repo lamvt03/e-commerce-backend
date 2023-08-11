@@ -33,7 +33,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         auth -> auth.requestMatchers(
                                 "/api/user/register",
-                                        "/*/auth/**").permitAll()
+                                        "/*/auth/**",
+                                "api/user/forgot-password",
+                                "api/user/reset-password"
+                                ).permitAll()
                                 .requestMatchers("api/user/role").hasRole("ADMIN")
                                 .requestMatchers("api/admin/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.POST,"api/product").hasRole("ADMIN")
