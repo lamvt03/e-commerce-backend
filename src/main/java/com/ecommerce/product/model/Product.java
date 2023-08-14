@@ -26,6 +26,5 @@ public class Product extends AbstractEntity {
     private List<String> images = new ArrayList<>();
     private String color;
     private List<String> ratings = new ArrayList<>();
-    private boolean isDeleted = false;
 
 }

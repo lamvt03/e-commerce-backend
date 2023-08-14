@@ -30,4 +30,6 @@ public abstract class AbstractEntity {
     @LastModifiedBy
     @Column(length = 50)
     protected String modifiedBy;
+
+    protected boolean isDeleted = false;
 }

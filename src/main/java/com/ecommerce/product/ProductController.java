@@ -1,7 +1,7 @@
 package com.ecommerce.product;
 
 import com.ecommerce.product.model.FilterDTO;
-import com.ecommerce.product.model.PaginationDTO;
+import com.ecommerce.common.PaginationDTO;
 import com.ecommerce.product.model.Product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -45,8 +45,8 @@ public class ProductController {
             @RequestParam(required = false) Double minPrice,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int limit,
-            @RequestParam(defaultValue = "asc", name = "sort") String sortDirection,
-            @RequestParam(defaultValue = "price") String sortBy
+            @RequestParam(defaultValue = "desc", name = "sort") String sortDirection,
+            @RequestParam(defaultValue = "modifiedAt") String sortBy
 
             ){
         FilterDTO filterDTO = new FilterDTO(brand, category, maxPrice, minPrice);

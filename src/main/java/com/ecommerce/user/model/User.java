@@ -1,5 +1,6 @@
 package com.ecommerce.user.model;
 
+import com.ecommerce.blog.model.Blog;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -8,13 +9,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Entity
 @Table(name = "user")
 public class User implements UserDetails {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String firstName;
@@ -36,6 +39,13 @@ public class User implements UserDetails {
 
     private String resetPasswordOTP;
     private LocalDateTime resetPasswordExpired;
+
+    @ManyToMany(mappedBy = "likes")
+    private Set<Blog> likedBlogs = new HashSet<>();
+
+    @ManyToMany(mappedBy = "dislikes")
+    private Set<Blog> dislikedBlogs = new HashSet<>();
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(role);
