@@ -1,4 +1,4 @@
-package com.ecommerce.product;
+package com.ecommerce.product.repository;
 
 import com.ecommerce.product.model.FilterDTO;
 import com.ecommerce.product.model.Product;

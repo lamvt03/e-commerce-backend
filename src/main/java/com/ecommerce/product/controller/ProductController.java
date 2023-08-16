@@ -1,8 +1,9 @@
-package com.ecommerce.product;
+package com.ecommerce.product.controller;
 
 import com.ecommerce.product.model.FilterDTO;
 import com.ecommerce.common.PaginationDTO;
 import com.ecommerce.product.model.Product;
+import com.ecommerce.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

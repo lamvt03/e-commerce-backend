@@ -1,15 +1,14 @@
-package com.ecommerce.product;
+package com.ecommerce.product.service;
 
 import com.ecommerce.common.PaginationService;
 import com.ecommerce.exception.ResourceNotFoundException;
+import com.ecommerce.product.repository.ProductRepository;
 import com.ecommerce.product.model.FilterDTO;
 import com.ecommerce.common.PaginationDTO;
 import com.ecommerce.product.model.Product;
 import com.github.slugify.Slugify;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

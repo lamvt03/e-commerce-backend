@@ -40,10 +40,12 @@ public class User implements UserDetails {
     private String resetPasswordOTP;
     private LocalDateTime resetPasswordExpired;
 
-    @ManyToMany(mappedBy = "likes")
+    
+
+    @ManyToMany(mappedBy = "likes", fetch = FetchType.EAGER)
     private Set<Blog> likedBlogs = new HashSet<>();
 
-    @ManyToMany(mappedBy = "dislikes")
+    @ManyToMany(mappedBy = "dislikes", fetch = FetchType.EAGER)
     private Set<Blog> dislikedBlogs = new HashSet<>();
 
     @Override
