@@ -1,4 +1,4 @@
-package com.ecommerce.product.model.dto;
+package com.ecommerce.product.model;
 
 public record FilterDTO(
         String brand,

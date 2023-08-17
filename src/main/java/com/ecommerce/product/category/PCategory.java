@@ -1,4 +1,4 @@
-package com.ecommerce.product.model.entity;
+package com.ecommerce.product.category;
 
 
 import com.ecommerce.common.AbstractEntity;

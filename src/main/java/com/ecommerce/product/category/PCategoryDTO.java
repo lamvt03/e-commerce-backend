@@ -1,4 +1,4 @@
-package com.ecommerce.product.model.dto;
+package com.ecommerce.product.category;
 
 import java.time.LocalDateTime;
 

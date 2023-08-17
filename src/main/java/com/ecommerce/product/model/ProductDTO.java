@@ -1,4 +1,6 @@
-package com.ecommerce.product.model.dto;
+package com.ecommerce.product.model;
+
+import com.ecommerce.product.rating.RatingDTO;
 
 import java.time.LocalDateTime;
 import java.util.Set;

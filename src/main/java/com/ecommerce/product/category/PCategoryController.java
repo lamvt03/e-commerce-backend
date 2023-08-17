@@ -1,7 +1,5 @@
-package com.ecommerce.product.controller;
+package com.ecommerce.product.category;
 
-import com.ecommerce.product.model.dto.PCategoryDTO;
-import com.ecommerce.product.service.PCategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

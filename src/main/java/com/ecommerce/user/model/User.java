@@ -1,8 +1,8 @@
 package com.ecommerce.user.model;
 
 import com.ecommerce.blog.model.Blog;
-import com.ecommerce.product.model.entity.Product;
-import com.ecommerce.product.model.entity.Rating;
+import com.ecommerce.product.model.Product;
+import com.ecommerce.product.rating.Rating;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;

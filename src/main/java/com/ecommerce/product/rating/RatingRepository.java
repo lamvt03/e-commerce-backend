@@ -1,6 +1,5 @@
-package com.ecommerce.product.repository;
+package com.ecommerce.product.rating;
 
-import com.ecommerce.product.model.entity.Rating;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

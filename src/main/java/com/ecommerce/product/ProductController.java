@@ -1,11 +1,10 @@
-package com.ecommerce.product.controller;
+package com.ecommerce.product;
 
 import com.ecommerce.product.model.request.AddToWishlistRequest;
-import com.ecommerce.product.model.dto.FilterDTO;
+import com.ecommerce.product.model.FilterDTO;
 import com.ecommerce.common.PaginationDTO;
-import com.ecommerce.product.model.entity.Product;
+import com.ecommerce.product.model.Product;
 import com.ecommerce.product.model.request.RatingRequest;
-import com.ecommerce.product.service.ProductService;
 import com.ecommerce.user.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

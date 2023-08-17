@@ -1,16 +1,15 @@
-package com.ecommerce.product.service;
+package com.ecommerce.product;
 
 import com.ecommerce.common.PaginationService;
 import com.ecommerce.exception.ResourceNotFoundException;
-import com.ecommerce.product.model.dto.ProductDTO;
-import com.ecommerce.product.model.entity.Rating;
+import com.ecommerce.product.model.ProductDTO;
+import com.ecommerce.product.rating.Rating;
 import com.ecommerce.product.model.request.AddToWishlistRequest;
 import com.ecommerce.product.model.request.RatingRequest;
-import com.ecommerce.product.repository.ProductRepository;
-import com.ecommerce.product.model.dto.FilterDTO;
+import com.ecommerce.product.model.FilterDTO;
 import com.ecommerce.common.PaginationDTO;
-import com.ecommerce.product.model.entity.Product;
-import com.ecommerce.product.repository.RatingRepository;
+import com.ecommerce.product.model.Product;
+import com.ecommerce.product.rating.RatingRepository;
 import com.ecommerce.user.model.User;
 import com.ecommerce.user.model.UserDTO;
 import com.ecommerce.user.service.UserMapper;

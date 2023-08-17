@@ -1,6 +1,6 @@
 package com.ecommerce.user.model;
 
-import com.ecommerce.product.model.dto.ProductDTO;
+import com.ecommerce.product.model.ProductDTO;
 
 import java.util.Set;
 

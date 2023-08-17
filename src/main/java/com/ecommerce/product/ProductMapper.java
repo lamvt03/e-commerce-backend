@@ -1,7 +1,8 @@
-package com.ecommerce.product.service;
+package com.ecommerce.product;
 
-import com.ecommerce.product.model.entity.Product;
-import com.ecommerce.product.model.dto.ProductDTO;
+import com.ecommerce.product.model.Product;
+import com.ecommerce.product.model.ProductDTO;
+import com.ecommerce.product.rating.RatingMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

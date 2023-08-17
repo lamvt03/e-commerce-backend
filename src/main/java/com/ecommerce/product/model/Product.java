@@ -1,16 +1,15 @@
-package com.ecommerce.product.model.entity;
+package com.ecommerce.product.model;
 
 import com.ecommerce.common.AbstractEntity;
+import com.ecommerce.product.rating.Rating;
 import com.ecommerce.user.model.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

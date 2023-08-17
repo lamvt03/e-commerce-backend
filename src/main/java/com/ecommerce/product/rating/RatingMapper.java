@@ -1,7 +1,5 @@
-package com.ecommerce.product.service;
+package com.ecommerce.product.rating;
 
-import com.ecommerce.product.model.dto.RatingDTO;
-import com.ecommerce.product.model.entity.Rating;
 import org.springframework.stereotype.Service;
 
 @Service

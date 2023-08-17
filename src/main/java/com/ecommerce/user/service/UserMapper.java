@@ -1,13 +1,11 @@
 package com.ecommerce.user.service;
 
-import com.ecommerce.product.service.ProductMapper;
+import com.ecommerce.product.ProductMapper;
 import com.ecommerce.user.model.User;
 import com.ecommerce.user.model.UserDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
