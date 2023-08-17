@@ -4,11 +4,11 @@ import com.ecommerce.exception.DuplicateResourceException;
 import com.ecommerce.exception.ResourceNotFoundException;
 import com.ecommerce.user.UserRepository;
 import com.ecommerce.user.model.*;
-import jakarta.transaction.Transactional;
+import com.ecommerce.user.model.request.UserPasswordChange;
+import com.ecommerce.user.model.request.UserPasswordReset;
+import com.ecommerce.user.model.request.UserRegistration;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cglib.core.Local;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +23,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final UserDTOMapper userDTOMapper;
+    private final UserMapper userMapper;
     private final MailService mailService;
 
     public UserDTO registerUser(UserRegistration u){
@@ -35,17 +35,20 @@ public class UserService {
             newUser.setLastName(u.lastName());
             newUser.setMobile(u.mobile());
             newUser = userRepository.save(newUser);
-            return userDTOMapper.apply(newUser);
+            return userMapper.toDto(newUser);
         }else
             throw new DuplicateResourceException("The user with email [%s] already exists".formatted(u.email()));
     }
 
-    private User findUserById(Long id){
+    public User findUserById(Long id){
         User u = userRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("The user with id [%s] not exists"
                         .formatted(id)));
         return u;
+    }
+    public User saveUser(User user){
+        return userRepository.save(user);
     }
     public User findUserByEmail(String email){
         User u = userRepository.findByEmail(email)
@@ -55,12 +58,12 @@ public class UserService {
     }
     public UserDTO getUser(Long id){
         User u = findUserById(id);
-        return userDTOMapper.apply(u);
+        return userMapper.toDto(u);
     }
     public UserDTO deleteUser(Long id){
         User u = findUserById(id);
         u.setEnable(false);
-        return userDTOMapper.apply(userRepository.save(u));
+        return userMapper.toDto(userRepository.save(u));
     }
     public String lockUserWithId(Long id){
         User u = findUserById(id);
@@ -85,7 +88,7 @@ public class UserService {
                     u.setPassword(passwordEncoder.encode(userPasswordChange.newPassword()));
                     return userRepository.save(u);
                 })
-                .map(userDTOMapper)
+                .map(userMapper::toDto)
                 .findFirst()
                 .orElseThrow(() -> new BadCredentialsException("Old password wrong"));
     }

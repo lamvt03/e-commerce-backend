@@ -1,6 +1,6 @@
 package com.ecommerce.product.controller;
 
-import com.ecommerce.product.model.PCategoryDTO;
+import com.ecommerce.product.model.dto.PCategoryDTO;
 import com.ecommerce.product.service.PCategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

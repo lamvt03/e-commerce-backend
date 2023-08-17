@@ -1,18 +1,19 @@
 package com.ecommerce.user.model;
 
 import com.ecommerce.blog.model.Blog;
+import com.ecommerce.product.model.entity.Product;
+import com.ecommerce.product.model.entity.Rating;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
-@Data
+@Setter
+@Getter
+@NoArgsConstructor
 @Entity
 @Table(name = "user")
 public class User implements UserDetails {
@@ -40,12 +41,21 @@ public class User implements UserDetails {
     private String resetPasswordOTP;
     private LocalDateTime resetPasswordExpired;
 
-    
+    @OneToOne(mappedBy = "postedBy")
+    private Rating rating;
 
-    @ManyToMany(mappedBy = "likes", fetch = FetchType.EAGER)
+    @ManyToMany
+    @JoinTable(
+            name = "user_wishlist",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
+    private Set<Product> wishlist = new HashSet<>();
+
+    @ManyToMany(mappedBy = "likes")
     private Set<Blog> likedBlogs = new HashSet<>();
 
-    @ManyToMany(mappedBy = "dislikes", fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "dislikes")
     private Set<Blog> dislikedBlogs = new HashSet<>();
 
     @Override

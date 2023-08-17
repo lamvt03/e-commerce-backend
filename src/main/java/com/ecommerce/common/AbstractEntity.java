@@ -25,11 +25,11 @@ public abstract class AbstractEntity {
     protected String createdBy;
 
     @LastModifiedDate
-    protected LocalDateTime modifiedAt;
+    protected LocalDateTime lastModifiedAt;
 
     @LastModifiedBy
     @Column(length = 50)
-    protected String modifiedBy;
+    protected String lastModifiedBy;
 
     protected boolean isDeleted = false;
 }

@@ -1,11 +1,15 @@
 package com.ecommerce.product.controller;
 
-import com.ecommerce.product.model.FilterDTO;
+import com.ecommerce.product.model.request.AddToWishlistRequest;
+import com.ecommerce.product.model.dto.FilterDTO;
 import com.ecommerce.common.PaginationDTO;
-import com.ecommerce.product.model.Product;
+import com.ecommerce.product.model.entity.Product;
+import com.ecommerce.product.model.request.RatingRequest;
 import com.ecommerce.product.service.ProductService;
+import com.ecommerce.user.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -59,5 +63,21 @@ public class ProductController {
     @GetMapping("all")
     public List<Product> getAllProducts (){
         return productService.findAllProducts();
+    }
+
+    @PutMapping("wishlist")
+    public ResponseEntity<?> addToWishList(
+            @AuthenticationPrincipal User user,
+            @RequestBody AddToWishlistRequest request
+    ){
+        return ResponseEntity.ok(productService.addToWishlist(user.getId(),request));
+    }
+
+    @PostMapping("rating")
+    public ResponseEntity<?> ratingProduct(
+            @AuthenticationPrincipal User user,
+            @RequestBody RatingRequest request
+    ){
+        return ResponseEntity.ok(productService.ratingProduct(user.getId(),request));
     }
 }

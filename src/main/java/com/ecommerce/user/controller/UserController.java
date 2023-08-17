@@ -1,15 +1,14 @@
 package com.ecommerce.user.controller;
 
 import com.ecommerce.user.model.*;
+import com.ecommerce.user.model.request.UserPasswordChange;
+import com.ecommerce.user.model.request.UserPasswordForgot;
+import com.ecommerce.user.model.request.UserPasswordReset;
+import com.ecommerce.user.model.request.UserRegistration;
 import com.ecommerce.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController

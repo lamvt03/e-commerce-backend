@@ -1,7 +1,6 @@
 package com.ecommerce.product.repository;
 
-import com.ecommerce.blog.model.Blog;
-import com.ecommerce.product.model.PCategory;
+import com.ecommerce.product.model.entity.PCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,13 +1,11 @@
 package com.ecommerce.product.service;
 
 import com.ecommerce.exception.ResourceNotFoundException;
-import com.ecommerce.product.model.PCategory;
-import com.ecommerce.product.model.PCategoryDTO;
+import com.ecommerce.product.model.entity.PCategory;
+import com.ecommerce.product.model.dto.PCategoryDTO;
 import com.ecommerce.product.repository.PCategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service

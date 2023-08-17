@@ -1,9 +1,14 @@
 package com.ecommerce.user.model;
 
+import com.ecommerce.product.model.dto.ProductDTO;
+
+import java.util.Set;
+
 public record UserDTO (
-        Long id,
+        Long encodeId,
         String firstName,
         String lastName,
         String email,
-        String mobile
+        String mobile,
+        Set<ProductDTO> wishlist
 ){ }
