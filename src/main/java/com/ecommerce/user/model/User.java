@@ -41,8 +41,8 @@ public class User implements UserDetails {
     private String resetPasswordOTP;
     private LocalDateTime resetPasswordExpired;
 
-    @OneToOne(mappedBy = "postedBy")
-    private Rating rating;
+    @OneToMany(mappedBy = "postedBy")
+    private Set<Rating> ratings;
 
     @ManyToMany
     @JoinTable(

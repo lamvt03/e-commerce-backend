@@ -1,8 +1,10 @@
 package com.ecommerce.product;
 
+import com.cloudinary.Cloudinary;
+import com.ecommerce.product.model.ProductDTO;
 import com.ecommerce.product.model.request.AddToWishlistRequest;
-import com.ecommerce.product.model.FilterDTO;
-import com.ecommerce.common.PaginationDTO;
+import com.ecommerce.util.FilterDTO;
+import com.ecommerce.util.PaginationDTO;
 import com.ecommerce.product.model.Product;
 import com.ecommerce.product.model.request.RatingRequest;
 import com.ecommerce.user.model.User;
@@ -10,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -19,6 +22,7 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
+    private final Cloudinary cloudinary;
 
     @PostMapping
     public ResponseEntity<Product> createProduct(@RequestBody Product p){
@@ -78,5 +82,15 @@ public class ProductController {
             @RequestBody RatingRequest request
     ){
         return ResponseEntity.ok(productService.ratingProduct(user.getId(),request));
+    }
+
+    @PostMapping("upload/{id}")
+    public ResponseEntity<ProductDTO> uploadImage(
+            @RequestParam("image") MultipartFile[] images,
+            @PathVariable Long id
+            ){
+        return ResponseEntity.ok(
+                productService.uploadProductImages(id, images)
+        );
     }
 }

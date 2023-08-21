@@ -1,5 +1,6 @@
 package com.ecommerce.product;
 
+import com.ecommerce.product.image.PImageMapper;
 import com.ecommerce.product.model.Product;
 import com.ecommerce.product.model.ProductDTO;
 import com.ecommerce.product.rating.RatingMapper;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 @Service
 public class ProductMapper {
     private final RatingMapper ratingMapper;
+    private final PImageMapper pImageMapper;
     public ProductDTO toDto(Product entity){
         return new ProductDTO(
                 entity.getId(),
@@ -27,7 +29,10 @@ public class ProductMapper {
                 entity.getRatingPoint(),
                 entity.getRatings().stream()
                         .map(ratingMapper::toDto)
-                        .collect(Collectors.toSet())
+                        .collect(Collectors.toSet()),
+                entity.getImages().stream()
+                        .map(pImageMapper::toDto)
+                        .collect(Collectors.toList())
         );
     }
 }

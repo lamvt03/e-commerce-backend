@@ -11,33 +11,32 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.Random;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
     private final MailService mailService;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserDTO registerUser(UserRegistration u){
-        if(!userRepository.existsByEmail(u.email())){
-            User newUser = new User();
-            newUser.setEmail(u.email());
-            newUser.setPassword(passwordEncoder.encode(u.password()));
-            newUser.setFirstName(u.firstName());
-            newUser.setLastName(u.lastName());
-            newUser.setMobile(u.mobile());
-            newUser = userRepository.save(newUser);
-            return userMapper.toDto(newUser);
+    public UserDTO registerUser(UserRegistration userRegistration){
+        if(!userRepository.existsByEmail(userRegistration.email())){
+            User newUser = userMapper.toEntity(userRegistration);
+            return userMapper.toDto(
+                    userRepository.save(newUser)
+            );
         }else
-            throw new DuplicateResourceException("The user with email [%s] already exists".formatted(u.email()));
+            throw new DuplicateResourceException("The user with email [%s] already exists".formatted(userRegistration.email()));
     }
 
     public User findUserById(Long id){

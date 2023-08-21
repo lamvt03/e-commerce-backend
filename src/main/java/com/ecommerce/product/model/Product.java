@@ -1,6 +1,7 @@
 package com.ecommerce.product.model;
 
 import com.ecommerce.common.AbstractEntity;
+import com.ecommerce.product.image.PImage;
 import com.ecommerce.product.rating.Rating;
 import com.ecommerce.user.model.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -31,14 +32,16 @@ public class Product extends AbstractEntity {
     private String category;
     private String brand;
     private int sold;
-    private List<String> images = new ArrayList<>();
     private String color;
     private float ratingPoint;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<PImage> images = new ArrayList<>();
 
     @ManyToMany(mappedBy = "wishlist")
     @JsonIgnore
     private Set<User> buyers = new HashSet<>();
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private Set<Rating> ratings = new HashSet<>();
 }

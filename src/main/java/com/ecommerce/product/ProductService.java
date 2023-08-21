@@ -1,24 +1,27 @@
 package com.ecommerce.product;
 
-import com.ecommerce.common.PaginationService;
+import com.ecommerce.product.image.PImage;
+import com.ecommerce.util.PaginationService;
 import com.ecommerce.exception.ResourceNotFoundException;
 import com.ecommerce.product.model.ProductDTO;
 import com.ecommerce.product.rating.Rating;
 import com.ecommerce.product.model.request.AddToWishlistRequest;
 import com.ecommerce.product.model.request.RatingRequest;
-import com.ecommerce.product.model.FilterDTO;
-import com.ecommerce.common.PaginationDTO;
+import com.ecommerce.util.FilterDTO;
+import com.ecommerce.util.PaginationDTO;
 import com.ecommerce.product.model.Product;
 import com.ecommerce.product.rating.RatingRepository;
 import com.ecommerce.user.model.User;
 import com.ecommerce.user.model.UserDTO;
 import com.ecommerce.user.service.UserMapper;
 import com.ecommerce.user.service.UserService;
+import com.ecommerce.util.ImageService;
 import com.github.slugify.Slugify;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Set;
@@ -34,6 +37,7 @@ public class ProductService {
     private final UserService userService;
     private final RatingRepository ratingRepository;
     private final ProductMapper productMapper;
+    private final ImageService imageService;
 
     public Product createProduct(Product product){
         String slug = Slugify.builder().transliterator(true).lowerCase(true).build()
@@ -121,14 +125,11 @@ public class ProductService {
             oldRating.setComment(request.comment());
         }else{
             User postedBy = userService.findUserById(userId);
-            Rating rating = ratingRepository.save(
-                    new Rating(
+            Rating rating = new Rating(
                             request.star(),
                             request.comment(),
                             postedBy,
-                            product
-                    )
-            );
+                            product);
             ratings.add(rating);
         }
         int ratingSum = ratings.stream()
@@ -138,5 +139,14 @@ public class ProductService {
         float ratingPoint = (float) (1.0 * ratingSum / ratingCount);
         product.setRatingPoint(ratingPoint);
         return productMapper.toDto(productRepository.save(product));
+    }
+
+    public ProductDTO uploadProductImages(Long prodId, MultipartFile[] images){
+        Product product =  findProductById(prodId);
+        List<PImage> imagesList = imageService.uploadProductImages(images, product);
+        product.getImages().addAll(imagesList);
+        return productMapper.toDto(
+                productRepository.save(product)
+        );
     }
 }

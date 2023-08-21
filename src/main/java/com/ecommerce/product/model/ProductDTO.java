@@ -1,8 +1,10 @@
 package com.ecommerce.product.model;
 
+import com.ecommerce.product.image.PImageDTO;
 import com.ecommerce.product.rating.RatingDTO;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 public record ProductDTO(
@@ -17,6 +19,7 @@ public record ProductDTO(
         String color,
         LocalDateTime lastModifiedAt,
         float ratingPoint,
-        Set<RatingDTO> ratings
+        Set<RatingDTO> ratings,
+        List<PImageDTO> images
 ) {
 }
