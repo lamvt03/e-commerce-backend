@@ -1,6 +1,9 @@
 package com.ecommerce.product.model;
 
 import com.ecommerce.common.AbstractEntity;
+import com.ecommerce.product.brand.PBrand;
+import com.ecommerce.product.category.PCategory;
+import com.ecommerce.product.color.PColor;
 import com.ecommerce.product.image.PImage;
 import com.ecommerce.product.rating.Rating;
 import com.ecommerce.user.model.User;
@@ -29,13 +32,24 @@ public class Product extends AbstractEntity {
     private String description;
     private double price;
     private int quantity;
-    private String category;
-    private String brand;
+
+    @ManyToOne
+    @JoinColumn(name = "p_category_id")
+    private PCategory category;
+
+    @ManyToOne
+    @JoinColumn(name = "p_brand_id")
+    private PBrand brand;
+
     private int sold;
-    private String color;
     private float ratingPoint;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @OneToMany
+    @JoinColumn(name = "product_id")
+    private Set<PColor> colors = new HashSet<>();
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "product_id")
     private List<PImage> images = new ArrayList<>();
 
     @ManyToMany(mappedBy = "wishlist")
@@ -44,4 +58,5 @@ public class Product extends AbstractEntity {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private Set<Rating> ratings = new HashSet<>();
+
 }

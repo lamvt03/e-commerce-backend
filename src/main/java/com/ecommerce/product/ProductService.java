@@ -35,15 +35,14 @@ public class ProductService {
     private final PaginationService paginationService;
     private final UserMapper userMapper;
     private final UserService userService;
-    private final RatingRepository ratingRepository;
     private final ProductMapper productMapper;
     private final ImageService imageService;
 
-    public Product createProduct(Product product){
-        String slug = Slugify.builder().transliterator(true).lowerCase(true).build()
-                .slugify(product.getTitle());
-        product.setSlug(slug);
-        return productRepository.save(product);
+    public ProductDTO createProduct(ProductDTO productDto){
+        Product productEntity = productMapper.toEntity(productDto);
+        return productMapper.toDto(
+                productRepository.save(productEntity)
+        );
     }
     private Product findProductById(Long id){
         Product p = productRepository
@@ -143,10 +142,14 @@ public class ProductService {
 
     public ProductDTO uploadProductImages(Long prodId, MultipartFile[] images){
         Product product =  findProductById(prodId);
-        List<PImage> imagesList = imageService.uploadProductImages(images, product);
+        List<PImage> imagesList = imageService.uploadProductImages(images);
         product.getImages().addAll(imagesList);
         return productMapper.toDto(
                 productRepository.save(product)
         );
+    }
+
+    public void deleteProductImage(String publicId) {
+        imageService.deleteProductImage(publicId);
     }
 }

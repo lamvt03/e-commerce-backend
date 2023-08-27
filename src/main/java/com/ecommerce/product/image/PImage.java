@@ -17,9 +17,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "product_image")
 public class PImage extends AbstractEntity {
-    private String url;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
-    private Product product;
+    private String url;
+    private String assetId;
+    private String publicId;
 }

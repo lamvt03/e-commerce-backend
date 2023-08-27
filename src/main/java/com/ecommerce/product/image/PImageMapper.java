@@ -7,7 +7,9 @@ public class PImageMapper {
 
     public PImageDTO toDto(PImage entity){
         return new PImageDTO(
-                entity.getUrl()
+                entity.getUrl(),
+                entity.getAssetId(),
+                entity.getPublicId()
         );
     }
 }

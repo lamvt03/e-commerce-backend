@@ -9,13 +9,13 @@ public class PCategoryMapper {
 
     public PCategoryDTO toDto(PCategory entity){
         return new PCategoryDTO(
-                entity.getTitle(),
+                entity.getName(),
                 entity.getLastModifiedAt()
         );
     }
     public PCategory toEntity(PCategoryDTO dto){
         PCategory entity = new PCategory();
-        entity.setTitle(dto.title());
+        entity.setName(dto.name());
         return entity;
     }
 }

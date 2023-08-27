@@ -4,21 +4,39 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        Map<String, String> errMap = new HashMap<>();
-        errMap.put("code", String.valueOf(HttpStatus.UNAUTHORIZED.value()));
-        errMap.put("msg", "JWT token getting wrong");
+        String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+
+        String msg = "";
+        if(authHeader == null || authHeader.isBlank())
+            msg += "You haven't attach jwt token";
+        else
+            msg += "Your token is invalid";
+
+        Map<String, String> errMap = Map.of(
+                "code", String.valueOf(HttpStatus.UNAUTHORIZED.value()),
+                "msg", msg
+        );
+
+        // return for client
+        PrintWriter out = response.getWriter();
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.getWriter().write(new ObjectMapper().writeValueAsString(errMap));
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding("UTF-8");
+        out.print(new ObjectMapper().writeValueAsString(errMap));
+        out.flush();
     }
 }

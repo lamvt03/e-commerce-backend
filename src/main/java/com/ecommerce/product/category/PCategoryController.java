@@ -38,11 +38,4 @@ public class PCategoryController {
     ){
         return ResponseEntity.ok(pCategoryService.getProductCategory(id));
     }
-
-    @PutMapping("restore/{id}")
-    public ResponseEntity<PCategoryDTO> restoreProductCategory(
-            @PathVariable Long id
-    ){
-        return ResponseEntity.ok(pCategoryService.restoreCategory(id));
-    }
 }

@@ -1,12 +1,13 @@
 package com.ecommerce.user.controller;
 
+import com.ecommerce.cart.request.CartRequest;
+import com.ecommerce.coupon.CouponApplyRequest;
+import com.ecommerce.order.OrderCreateRequest;
 import com.ecommerce.user.model.*;
-import com.ecommerce.user.model.request.UserPasswordChange;
-import com.ecommerce.user.model.request.UserPasswordForgot;
-import com.ecommerce.user.model.request.UserPasswordReset;
-import com.ecommerce.user.model.request.UserRegistration;
+import com.ecommerce.user.model.request.*;
 import com.ecommerce.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,4 +58,60 @@ public class UserController {
         return userService.handleResetPassword(userPasswordReset);
     }
 
+    @GetMapping("wishlist")
+    public ResponseEntity<?> getWishlist(
+            @AuthenticationPrincipal User user
+    ){
+        return ResponseEntity.ok(
+                userService.getWishlist(user.getId())
+        );
+    }
+
+    @PostMapping("cart")
+    public ResponseEntity<?> addCart(
+            @AuthenticationPrincipal User user,
+            @RequestBody CartRequest request
+            ){
+
+        return ResponseEntity.ok(
+                userService.addCart(user.getId(), request)
+        );
+    }
+    @GetMapping("cart")
+    public ResponseEntity<?> getCart(
+            @AuthenticationPrincipal User user
+    ){
+        return ResponseEntity.ok(
+                userService.getCart(user.getId())
+        );
+    }
+
+    @PostMapping("/apply-coupon")
+    public ResponseEntity<?> applyCoupon(
+            @AuthenticationPrincipal User user,
+            @RequestBody CouponApplyRequest request
+            ){
+        return ResponseEntity.ok(
+                userService.applyCoupon(user.getId(), request)
+        );
+    }
+
+    @PostMapping("order")
+    public ResponseEntity<?> createOrder(
+            @AuthenticationPrincipal User user,
+            @RequestBody OrderCreateRequest request
+    ){
+        return ResponseEntity.ok(
+                userService.createOrder(user.getId(), request)
+        );
+    }
+
+    @GetMapping("orders")
+    public ResponseEntity<?> getOrders(
+            @AuthenticationPrincipal User user
+    ){
+        return ResponseEntity.ok(
+                userService.getOrders(user.getId())
+        );
+    }
 }

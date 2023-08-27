@@ -14,6 +14,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -22,26 +23,26 @@ public class ImageService {
 
     private final Cloudinary cloudinary;
 
-    public List<PImage> uploadProductImages(MultipartFile[] images, Product product){
+    public List<PImage> uploadProductImages(MultipartFile[] images){
         List<PImage> imagesList = new ArrayList<>();
         for(MultipartFile image: images){
-            PImage imageEntity = uploadImageToCloudinary(image, product);
+            PImage imageEntity = uploadImageToCloudinary(image);
             imagesList.add(imageEntity);
         }
         return imagesList;
     }
     
-    private PImage uploadImageToCloudinary(MultipartFile image, Product product){
+    private PImage uploadImageToCloudinary(MultipartFile image){
         if(!image.isEmpty() && isImage(image)){
             byte[] imageBytes = getResizedAndFormattedImageBytes(image);
             try{
-                String url = cloudinary.uploader()
-                        .upload(imageBytes, ObjectUtils.emptyMap())
-                        .get("url")
-                        .toString();
+                Map uploadResult = cloudinary.uploader()
+                        .upload(imageBytes, ObjectUtils.emptyMap());
+
                 return new PImage(
-                        url,
-                        product
+                        uploadResult.get("url").toString(),
+                        uploadResult.get("asset_id").toString(),
+                        uploadResult.get("public_id").toString()
                     );
             }catch (IOException ex) {}
         }
@@ -62,5 +63,13 @@ public class ImageService {
                     .toOutputStream(resultStream);
         }catch (IOException ex){}
         return resultStream.toByteArray();
+    }
+
+    public void deleteProductImage(String publicId) {
+        try {
+            cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

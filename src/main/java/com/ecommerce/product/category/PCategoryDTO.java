@@ -3,7 +3,7 @@ package com.ecommerce.product.category;
 import java.time.LocalDateTime;
 
 public record PCategoryDTO(
-        String title,
+        String name,
         LocalDateTime lastModifiedAt
 ) {
 }

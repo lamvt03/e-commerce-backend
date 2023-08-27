@@ -1,5 +1,6 @@
 package com.ecommerce.product.model;
 
+import com.ecommerce.product.color.PColorDTO;
 import com.ecommerce.product.image.PImageDTO;
 import com.ecommerce.product.rating.RatingDTO;
 
@@ -14,9 +15,10 @@ public record ProductDTO(
         String description,
         double price,
         int quantity,
+        int sold,
         String category,
         String brand,
-        String color,
+        Set<Long> colorIds,
         LocalDateTime lastModifiedAt,
         float ratingPoint,
         Set<RatingDTO> ratings,

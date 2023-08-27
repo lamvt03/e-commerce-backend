@@ -1,7 +1,22 @@
 package com.ecommerce.user.service;
 
+import com.ecommerce.cart.*;
+import com.ecommerce.cart.cartProduct.CartProduct;
+import com.ecommerce.cart.cartProduct.CartProductRepository;
+import com.ecommerce.cart.request.CartRequest;
+import com.ecommerce.coupon.Coupon;
+import com.ecommerce.coupon.CouponApplyRequest;
+import com.ecommerce.coupon.CouponRepository;
 import com.ecommerce.exception.DuplicateResourceException;
 import com.ecommerce.exception.ResourceNotFoundException;
+import com.ecommerce.order.*;
+import com.ecommerce.order.orderPaymentIntent.OrderPaymentIntent;
+import com.ecommerce.order.orderProduct.OrderProduct;
+import com.ecommerce.order.orderProduct.OrderProductMapper;
+import com.ecommerce.product.ProductMapper;
+import com.ecommerce.product.ProductRepository;
+import com.ecommerce.product.model.Product;
+import com.ecommerce.product.model.ProductDTO;
 import com.ecommerce.user.UserRepository;
 import com.ecommerce.user.model.*;
 import com.ecommerce.user.model.request.UserPasswordChange;
@@ -13,11 +28,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -28,6 +44,9 @@ public class UserService {
     private final UserMapper userMapper;
     private final MailService mailService;
     private final PasswordEncoder passwordEncoder;
+    private final ProductMapper productMapper;
+    private final CartRepository cartRepository;
+    private final ProductRepository productRepository;
 
     public UserDTO registerUser(UserRegistration userRegistration){
         if(!userRepository.existsByEmail(userRegistration.email())){
@@ -126,5 +145,123 @@ public class UserService {
             return "Reset password successfully";
         }
         return "failure";
+    }
+
+    public Set<ProductDTO> getWishlist(Long id) {
+        User user = findUserById(id);
+        return user.getWishlist().stream()
+                .map(productMapper::toDto)
+                .collect(Collectors.toSet());
+    }
+    private final CartProductRepository cartProductRepository;
+    private final CartMapper cartMapper;
+
+    public CartDTO addCart(Long id, CartRequest request) {
+        Cart cart = cartRepository.findByUser_Id(id).orElse(null);
+        if(cart != null){
+            cart.getProducts().forEach(product -> cartProductRepository.deleteById(product.getId()));
+            cartRepository.deleteById(cart.getId());
+        }
+        Set<CartProduct> products =  request.cart().stream()
+                .map(item -> {
+                    Product product = productRepository.findById(item.productId()).orElseThrow();
+                    return new CartProduct(
+                            null,
+                            product,
+                            item.count(),
+                            item.color(),
+                            product.getPrice());
+                })
+                .collect(Collectors.toSet());
+
+        double total = 0;
+        for(CartProduct product : products){
+            total += product.getCount() * product.getPrice();
+        }
+
+        Cart newCart  = cartRepository.save(new Cart(
+                products,
+                total,
+                total,
+                findUserById(id)
+        ));
+        return cartMapper.toDto(
+                newCart
+        );
+    }
+
+    public CartDTO getCart(Long id) {
+        User u = findUserById(id);
+        return cartMapper.toDto(
+                u.getCart()
+        );
+    }
+
+    private final CouponRepository couponRepository;
+    public CartDTO applyCoupon(Long userId, CouponApplyRequest request) {
+        Coupon coupon = couponRepository.findByName(request.name())
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("coupon with name [%s] not exists".formatted(request.name()))
+                );
+        User user = findUserById(userId);
+        Cart cart = user.getCart();
+        double totalAfterDiscount = cart.getTotal() * (1 - coupon.getDiscount() / 100.0);
+        cart.setTotalAfterDiscount(totalAfterDiscount);
+
+        return cartMapper.toDto(
+                cartRepository.save(cart)
+        );
+    }
+
+    private final OrderRepository orderRepository;
+    private final OrderMapper orderMapper;
+    public Object createOrder(Long userId, OrderCreateRequest request) {
+        if(!request.COD())
+            throw new RuntimeException("Unsupported payment method");
+        User user = findUserById(userId);
+        Cart userCart = user.getCart();
+        double finalAmount = 0;
+        if(request.couponApplied())
+            finalAmount += userCart.getTotalAfterDiscount();
+        else
+            finalAmount += userCart.getTotal();
+
+        Order newOrder = new Order(
+                userCart.getProducts().stream()
+                        .map(cartProduct -> new OrderProduct(
+                                null,
+                                cartProduct.getProduct(),
+                                cartProduct.getCount(),
+                                cartProduct.getColor()
+                        ))
+                        .collect(Collectors.toSet()),
+                OrderStatus.CASH_ON_DELIVERY,
+                new OrderPaymentIntent(
+                        "COD",
+                        finalAmount,
+                        OrderStatus.CASH_ON_DELIVERY,
+                        "usd"
+                ),
+                user
+        );
+
+        userCart.getProducts().forEach(cartProduct -> {
+            Product product = productRepository.findById(cartProduct.getId()).orElseThrow();
+            product.setQuantity(product.getQuantity() - cartProduct.getCount());
+            product.setSold(product.getSold() + cartProduct.getCount());
+            productRepository.save(product);
+        });
+
+        return orderMapper.toDto(
+                orderRepository.save(
+                        newOrder
+                )
+        );
+    }
+
+    public Object getOrders(Long userId) {
+        return orderRepository.findAllByOrderBy_Id(userId).stream()
+                .map(orderMapper::toDto)
+                .collect(Collectors.toSet());
     }
 }

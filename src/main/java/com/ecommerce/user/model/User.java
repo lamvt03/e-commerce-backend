@@ -1,6 +1,8 @@
 package com.ecommerce.user.model;
 
-import com.ecommerce.blog.model.Blog;
+//import com.ecommerce.blog.model.Blog;
+import com.ecommerce.cart.Cart;
+import com.ecommerce.order.Order;
 import com.ecommerce.product.model.Product;
 import com.ecommerce.product.rating.Rating;
 import jakarta.persistence.*;
@@ -42,7 +44,7 @@ public class User implements UserDetails {
     private LocalDateTime resetPasswordExpired;
 
     @OneToMany(mappedBy = "postedBy")
-    private Set<Rating> ratings;
+    private Set<Rating> ratings = new HashSet<>();
 
     @ManyToMany
     @JoinTable(
@@ -52,11 +54,17 @@ public class User implements UserDetails {
     )
     private Set<Product> wishlist = new HashSet<>();
 
-    @ManyToMany(mappedBy = "likes")
-    private Set<Blog> likedBlogs = new HashSet<>();
+//    @ManyToMany(mappedBy = "likes")
+//    private Set<Blog> likedBlogs = new HashSet<>();
+//
+//    @ManyToMany(mappedBy = "dislikes")
+//    private Set<Blog> dislikedBlogs = new HashSet<>();
 
-    @ManyToMany(mappedBy = "dislikes")
-    private Set<Blog> dislikedBlogs = new HashSet<>();
+    @OneToMany(mappedBy = "orderBy")
+    private Set<Order> orders = new HashSet<>();
+
+    @OneToOne(mappedBy = "user")
+    private Cart cart;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

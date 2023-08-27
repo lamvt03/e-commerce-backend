@@ -9,6 +9,7 @@ import com.ecommerce.product.model.Product;
 import com.ecommerce.product.model.request.RatingRequest;
 import com.ecommerce.user.model.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +26,12 @@ public class ProductController {
     private final Cloudinary cloudinary;
 
     @PostMapping
-    public ResponseEntity<Product> createProduct(@RequestBody Product p){
-        return ResponseEntity.ok(productService.createProduct(p));
+    public ResponseEntity<ProductDTO> createProduct(
+            @RequestBody ProductDTO productDTO
+    ){
+        return ResponseEntity.ok(
+                productService.createProduct(productDTO)
+        );
     }
 
     @GetMapping("{id}")
@@ -91,6 +96,15 @@ public class ProductController {
             ){
         return ResponseEntity.ok(
                 productService.uploadProductImages(id, images)
+        );
+    }
+    @DeleteMapping("image/{publicId}")
+    public ResponseEntity<?> deleteProductImage(
+            @PathVariable String publicId
+    ){
+        productService.deleteProductImage(publicId);
+        return new ResponseEntity<>(
+                HttpStatus.NO_CONTENT
         );
     }
 }

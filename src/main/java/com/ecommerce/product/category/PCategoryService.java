@@ -20,7 +20,7 @@ public class PCategoryService {
         return pCategoryMapper.toDto(pCategoryRepository.save(pCategory));
     }
     private PCategory findPCategoryById(Long id){
-        PCategory pCategory = pCategoryRepository.findByIdAndIsDeletedFalse(id)
+        PCategory pCategory = pCategoryRepository.findById(id)
                 .orElseThrow(
                         () -> new ResourceNotFoundException("Product category with id [%s] not found".formatted(id))
                 );
@@ -29,14 +29,13 @@ public class PCategoryService {
 
     public PCategoryDTO updateProductCategory(Long id, PCategoryDTO pCategoryDTO) {
         PCategory pCategory = findPCategoryById(id);
-        pCategory.setTitle(pCategoryDTO.title());
+        pCategory.setName(pCategoryDTO.name());
         return pCategoryMapper.toDto(pCategoryRepository.save(pCategory));
     }
 
     public void deleteProductCategory(Long id) {
         PCategory pCategory = findPCategoryById(id);
-        pCategory.setDeleted(true);
-        pCategoryRepository.save(pCategory);
+        pCategoryRepository.delete(pCategory);
     }
 
     public PCategoryDTO getProductCategory(Long id) {
@@ -44,10 +43,4 @@ public class PCategoryService {
         return pCategoryMapper.toDto(pCategory);
     }
 
-    public PCategoryDTO restoreCategory(Long id) {
-        PCategory deletedPCategory = pCategoryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("not found"));
-        deletedPCategory.setDeleted(false);
-        return pCategoryMapper.toDto(pCategoryRepository.save(deletedPCategory));
-    }
 }
