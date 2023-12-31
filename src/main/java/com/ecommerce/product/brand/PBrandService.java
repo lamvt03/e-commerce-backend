@@ -4,6 +4,8 @@ import com.ecommerce.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class PBrandService {
@@ -18,18 +20,18 @@ public class PBrandService {
         );
     }
     private PBrand findPCategoryById(Long id){
-        PBrand pBrand = pBrandRepository.findById(id)
+        return pBrandRepository.findById(id)
                 .orElseThrow(
                         () -> new ResourceNotFoundException("Product brand with id [%s] not found".formatted(id))
                 );
-        return pBrand;
     }
 
     public PBrandDTO updateProductBrand(Long id, PBrandDTO pBrandDTO) {
         PBrand pBrand = findPCategoryById(id);
-        pBrand.setName(pBrandDTO.name());
         return pBrandMapper.toDto(
-                pBrandRepository.save(pBrand)
+                pBrandRepository.save(
+                        pBrandMapper.toEntity(pBrand, pBrandDTO)
+                )
         );
     }
 
@@ -43,4 +45,9 @@ public class PBrandService {
         return pBrandMapper.toDto(pBrand);
     }
 
+    public List<PBrandDTO> getAllProductBrands() {
+        return pBrandRepository.findAll().stream()
+                .map(pBrandMapper::toDto)
+                .toList();
+    }
 }

@@ -48,15 +48,4 @@ public class Product extends AbstractEntity {
     @JoinColumn(name = "product_id")
     private Set<PColor> colors = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "product_id")
-    private List<PImage> images = new ArrayList<>();
-
-    @ManyToMany(mappedBy = "wishlist")
-    @JsonIgnore
-    private Set<User> buyers = new HashSet<>();
-
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    private Set<Rating> ratings = new HashSet<>();
-
 }

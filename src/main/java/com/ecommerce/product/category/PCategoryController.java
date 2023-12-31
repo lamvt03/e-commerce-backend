@@ -1,12 +1,15 @@
 package com.ecommerce.product.category;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/product-category")
+@RequestMapping("/api/product/category")
 public class PCategoryController {
 
     private final PCategoryService pCategoryService;
@@ -14,7 +17,9 @@ public class PCategoryController {
     public ResponseEntity<PCategoryDTO> createProductCategory(
             @RequestBody PCategoryDTO pCategoryDTO
     ){
-        return ResponseEntity.ok(pCategoryService.createCategory(pCategoryDTO));
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(pCategoryService.createCategory(pCategoryDTO));
     }
     @PutMapping("{id}")
     public ResponseEntity<PCategoryDTO> updateProductCategory(
@@ -25,17 +30,26 @@ public class PCategoryController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<String> updateProductCategory(
+    public ResponseEntity<?> updateProductCategory(
             @PathVariable Long id
     ){
         pCategoryService.deleteProductCategory(id);
-        return ResponseEntity.ok("Product Category has been deleted");
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
     }
 
     @GetMapping("{id}")
     public ResponseEntity<PCategoryDTO> getProductCategory(
             @PathVariable Long id
     ){
-        return ResponseEntity.ok(pCategoryService.getProductCategory(id));
+        PCategoryDTO pCategoryDTO = pCategoryService.getProductCategory(id);
+        return ResponseEntity.ok(pCategoryDTO);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<PCategoryDTO>> getAllProductCategories(){
+        List<PCategoryDTO> pCategoryDTOs = pCategoryService.getAllProductCategories();
+        return ResponseEntity.ok(pCategoryDTOs);
     }
 }

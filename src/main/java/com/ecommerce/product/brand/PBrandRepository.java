@@ -5,5 +5,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PBrandRepository extends JpaRepository<PBrand, Long> {
-    PBrand findByNameIgnoreCase(String name);
 }

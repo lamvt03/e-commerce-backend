@@ -5,6 +5,8 @@ import com.ecommerce.product.model.Product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class PColorService {
@@ -19,18 +21,16 @@ public class PColorService {
         );
     }
     private PColor findPColorById(Long id){
-        PColor pColor = pColorRepository.findById(id)
+        return pColorRepository.findById(id)
                 .orElseThrow(
                         () -> new ResourceNotFoundException("Product color with id [%s] not found".formatted(id))
                 );
-        return pColor;
     }
 
     public PColorDTO updateProductColor(Long id, PColorDTO pColorDTO) {
         PColor pColor = findPColorById(id);
-        pColor.setName(pColorDTO.name());
         return pColorMapper.toDto(
-                pColorRepository.save(pColor)
+                pColorRepository.save(pColorMapper.toEntity(pColor, pColorDTO))
         );
     }
 
@@ -42,5 +42,11 @@ public class PColorService {
     public PColorDTO getProductCategory(Long id) {
         PColor pColor = findPColorById(id);
         return pColorMapper.toDto(pColor);
+    }
+
+    public List<PColorDTO> getAllProductCategories(){
+        return pColorRepository.findAll().stream()
+                .map(pColorMapper::toDto)
+                .toList();
     }
 }

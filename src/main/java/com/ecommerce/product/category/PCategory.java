@@ -17,4 +17,6 @@ public class PCategory extends AbstractEntity {
 
     @Column(unique = true)
     private String name;
+
+    private String code;
 }

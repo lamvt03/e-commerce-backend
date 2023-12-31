@@ -21,4 +21,8 @@ public class PImage extends AbstractEntity {
     private String url;
     private String assetId;
     private String publicId;
+
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
 }

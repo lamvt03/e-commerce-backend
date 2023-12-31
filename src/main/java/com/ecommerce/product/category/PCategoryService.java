@@ -8,6 +8,8 @@ import com.ecommerce.product.category.PCategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class PCategoryService {
@@ -17,20 +19,22 @@ public class PCategoryService {
 
     public PCategoryDTO createCategory(PCategoryDTO pCategoryDTO) {
         PCategory pCategory = pCategoryMapper.toEntity(pCategoryDTO);
-        return pCategoryMapper.toDto(pCategoryRepository.save(pCategory));
+        return pCategoryMapper.toDto(
+                pCategoryRepository.save(pCategory)
+        );
     }
     private PCategory findPCategoryById(Long id){
-        PCategory pCategory = pCategoryRepository.findById(id)
+        return pCategoryRepository.findById(id)
                 .orElseThrow(
                         () -> new ResourceNotFoundException("Product category with id [%s] not found".formatted(id))
                 );
-        return pCategory;
     }
 
     public PCategoryDTO updateProductCategory(Long id, PCategoryDTO pCategoryDTO) {
         PCategory pCategory = findPCategoryById(id);
-        pCategory.setName(pCategoryDTO.name());
-        return pCategoryMapper.toDto(pCategoryRepository.save(pCategory));
+        return pCategoryMapper.toDto(
+                pCategoryRepository.save(pCategoryMapper.toEntity(pCategory, pCategoryDTO))
+        );
     }
 
     public void deleteProductCategory(Long id) {
@@ -43,4 +47,9 @@ public class PCategoryService {
         return pCategoryMapper.toDto(pCategory);
     }
 
+    public List<PCategoryDTO> getAllProductCategories(){
+        return pCategoryRepository.findAll().stream()
+                .map(pCategoryMapper::toDto)
+                .toList();
+    }
 }

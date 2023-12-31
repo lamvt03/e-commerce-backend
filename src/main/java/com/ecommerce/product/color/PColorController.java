@@ -6,9 +6,11 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/product-color")
+@RequestMapping("/api/product/color")
 public class PColorController {
 
     private final PColorService pColorService;
@@ -48,6 +50,13 @@ public class PColorController {
     ){
         return ResponseEntity.ok(
                 pColorService.getProductCategory(id)
+        );
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<PColorDTO>> getAllProductColors(){
+        return ResponseEntity.ok(
+                pColorService.getAllProductCategories()
         );
     }
 }

@@ -7,9 +7,12 @@ public class RatingMapper {
 
     public RatingDTO toDto(Rating entity){
         return new RatingDTO(
-                entity.getPostedBy().getEmail(),
                 entity.getStar(),
-                entity.getComment()
+                entity.getComment(),
+                entity.getCreatedAt(),
+                entity.getUser().getEmail(),
+                entity.getUser().getFullname(),
+                entity.getLastModifiedAt().isAfter(entity.getCreatedAt())
         );
     }
 }

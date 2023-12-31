@@ -20,4 +20,6 @@ public class PBrand extends AbstractEntity {
 
     @Column(unique = true)
     private String name;
+
+    private String code;
 }

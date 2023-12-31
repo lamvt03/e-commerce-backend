@@ -18,7 +18,7 @@ public record ProductDTO(
         int sold,
         String category,
         String brand,
-        Set<Long> colorIds,
+        Set<String> colors,
         LocalDateTime lastModifiedAt,
         float ratingPoint,
         Set<RatingDTO> ratings,

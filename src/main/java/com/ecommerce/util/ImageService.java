@@ -3,6 +3,7 @@ package com.ecommerce.util;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.ecommerce.product.image.PImage;
+import com.ecommerce.product.image.PImageRepository;
 import com.ecommerce.product.model.Product;
 import lombok.RequiredArgsConstructor;
 import net.coobird.thumbnailator.Thumbnails;
@@ -22,28 +23,32 @@ import java.util.Map;
 public class ImageService {
 
     private final Cloudinary cloudinary;
+    private final PImageRepository pImageRepository;
 
-    public List<PImage> uploadProductImages(MultipartFile[] images){
+    public List<PImage> uploadProductImages(MultipartFile[] images, Product product){
         List<PImage> imagesList = new ArrayList<>();
         for(MultipartFile image: images){
-            PImage imageEntity = uploadImageToCloudinary(image);
-            imagesList.add(imageEntity);
+            Map uploadResult = uploadImageToCloudinary(image, product);
+            PImage pImage =  pImageRepository.save(
+                    new PImage(
+                            uploadResult.get("url").toString(),
+                            uploadResult.get("asset_id").toString(),
+                            uploadResult.get("public_id").toString(),
+                            product
+                    )
+            );
+            imagesList.add(pImage);
         }
         return imagesList;
     }
     
-    private PImage uploadImageToCloudinary(MultipartFile image){
+    private Map uploadImageToCloudinary(MultipartFile image, Product product){
         if(!image.isEmpty() && isImage(image)){
             byte[] imageBytes = getResizedAndFormattedImageBytes(image);
             try{
-                Map uploadResult = cloudinary.uploader()
+                return cloudinary.uploader()
                         .upload(imageBytes, ObjectUtils.emptyMap());
 
-                return new PImage(
-                        uploadResult.get("url").toString(),
-                        uploadResult.get("asset_id").toString(),
-                        uploadResult.get("public_id").toString()
-                    );
             }catch (IOException ex) {}
         }
         else

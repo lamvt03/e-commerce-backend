@@ -1,4 +1,4 @@
-package com.ecommerce.util;
+package com.ecommerce.util.model;
 
 public record PaginationDTO(
         int page,

@@ -1,14 +1,16 @@
 package com.ecommerce.product;
 
 import com.ecommerce.product.image.PImage;
+import com.ecommerce.product.image.PImageRepository;
+import com.ecommerce.product.model.request.ProductCreateRequest;
 import com.ecommerce.util.PaginationService;
 import com.ecommerce.exception.ResourceNotFoundException;
 import com.ecommerce.product.model.ProductDTO;
 import com.ecommerce.product.rating.Rating;
-import com.ecommerce.product.model.request.AddToWishlistRequest;
+import com.ecommerce.product.model.request.AddWishlistRequest;
 import com.ecommerce.product.model.request.RatingRequest;
-import com.ecommerce.util.FilterDTO;
-import com.ecommerce.util.PaginationDTO;
+import com.ecommerce.util.model.FilterDTO;
+import com.ecommerce.util.model.PaginationDTO;
 import com.ecommerce.product.model.Product;
 import com.ecommerce.product.rating.RatingRepository;
 import com.ecommerce.user.model.User;
@@ -16,7 +18,6 @@ import com.ecommerce.user.model.UserDTO;
 import com.ecommerce.user.service.UserMapper;
 import com.ecommerce.user.service.UserService;
 import com.ecommerce.util.ImageService;
-import com.github.slugify.Slugify;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -32,108 +33,100 @@ import java.util.Set;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final RatingRepository ratingRepository;
+    private final PImageRepository pImageRepository;
     private final PaginationService paginationService;
     private final UserMapper userMapper;
     private final UserService userService;
     private final ProductMapper productMapper;
     private final ImageService imageService;
 
-    public ProductDTO createProduct(ProductDTO productDto){
-        Product productEntity = productMapper.toEntity(productDto);
+    public ProductDTO createProduct(ProductCreateRequest request){
+        Product productEntity = productMapper.toEntity(request);
         return productMapper.toDto(
                 productRepository.save(productEntity)
         );
     }
     private Product findProductById(Long id){
-        Product p = productRepository
+        return productRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("The product with id [%s] not exists"
                         .formatted(id)));
-        return p;
     }
-    public Product getProduct(Long id){
+    public ProductDTO getProductById(Long id){
         Product p = findProductById(id);
         if(!p.isDeleted())
-            return p;
+            return productMapper.toDto(p);
         throw new ResourceNotFoundException("The product with id [%s] not exists"
                 .formatted(id));
     }
-    public String deleteProductById(Long id){
-        Product p = productRepository
-                .findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("The product with id [%s] not exists"
-                        .formatted(id)));
+    public void deleteProductById(Long id){
+        Product p = findProductById(id);
         p.setDeleted(true);
         productRepository.save(p);
-        return "Product have been deleted";
     }
 
-    public List<Product> findAllProducts(){
-        return productRepository.findAll();
+    public List<ProductDTO> findAllProducts(){
+        return productRepository.findAllByOrderByCreatedAtDesc().stream()
+                .map(productMapper::toDto)
+                .toList();
     }
 
-    public Product updateProductById(Long id, Product p){
-        Product oldProduct = findProductById(id);
-        String slug = Slugify.builder().transliterator(true).lowerCase(true).build()
-                .slugify(p.getTitle());
-        p.setSlug(slug);
-        p.setId(id);
-        p.setCreatedBy(oldProduct.getCreatedBy());
-        p.setCreatedAt(oldProduct.getCreatedAt());
-        return productRepository.save(p);
+    public ProductDTO updateProductById(Long id, ProductCreateRequest request){
+        Product product = findProductById(id);
+        return productMapper.toDto(
+                productRepository.save(
+                        productMapper.toEntity(product, request)
+                )
+        );
     }
 
-    public List<Product> filterProducts(FilterDTO filter, PaginationDTO pagination){
+    public List<ProductDTO> filterProducts(FilterDTO filter, PaginationDTO pagination){
         Pageable pageable = paginationService.getPageable(pagination);
-        return productRepository.findWithFilter(filter, pageable);
+        return productRepository.findWithFilter(filter, pageable).stream()
+                .map(productMapper::toDto)
+                .toList();
     }
 
 
-    public UserDTO addToWishlist(Long userId, AddToWishlistRequest request) {
+    public UserDTO addToWishlist(Long userId, AddWishlistRequest request) {
         Product product = findProductById(request.productId());
         User user = userService.findUserById(userId);
         Set<Product> wishlist = user.getWishlist();
-        boolean alreadyExist =  wishlist.stream()
-                .filter(p -> p.getId().equals(request.productId()))
-                .findFirst()
-                .isPresent();
+        boolean alreadyExist = wishlist.stream()
+                .anyMatch(p -> p.getId().equals(request.productId()));
         if(alreadyExist){
             wishlist.remove(product);
         }else{
             wishlist.add(product);
         }
-        return userMapper.toDto(userService.saveUser(user));
+        return userMapper.toDto(
+                userService.saveUser(user)
+        );
     }
 
-    public ProductDTO ratingProduct(Long userId, RatingRequest request) {
+    public ProductDTO ratingProduct(User user, RatingRequest request) {
         Product product = findProductById(request.productId());
-        Set<Rating> ratings = product.getRatings();
+        Rating existRating = ratingRepository.findByUser_IdAndProduct_Id(user.getId(), request.productId())
+                .orElse(null);
 
         //check whether user already rated product
-        boolean alreadyRated = ratings.stream()
-                .filter(rating -> rating.getPostedBy().getId().equals(userId))
-                .findFirst()
-                .isPresent();
-
-        if(alreadyRated){
-            Rating oldRating = ratings.stream()
-                    .filter(rating -> rating.getPostedBy().getId().equals(userId))
-                    .findFirst()
-                    .orElseThrow();
-            oldRating.setStar(request.star());
-            oldRating.setComment(request.comment());
+        if(existRating != null){
+            existRating.setStar(request.star());
+            existRating.setComment(request.comment());
+            ratingRepository.save(existRating);
         }else{
-            User postedBy = userService.findUserById(userId);
             Rating rating = new Rating(
                             request.star(),
                             request.comment(),
-                            postedBy,
+                            user,
                             product);
-            ratings.add(rating);
+            ratingRepository.save(rating);
         }
+        List<Rating> ratings = ratingRepository.findAllByProduct_Id(request.productId());
         int ratingSum = ratings.stream()
                 .mapToInt(Rating::getStar)
-                .reduce(0, (curr, next) -> curr + next);
+                .reduce(0, Integer::sum);
         int ratingCount = ratings.size();
         float ratingPoint = (float) (1.0 * ratingSum / ratingCount);
         product.setRatingPoint(ratingPoint);
@@ -142,14 +135,18 @@ public class ProductService {
 
     public ProductDTO uploadProductImages(Long prodId, MultipartFile[] images){
         Product product =  findProductById(prodId);
-        List<PImage> imagesList = imageService.uploadProductImages(images);
-        product.getImages().addAll(imagesList);
+        imageService.uploadProductImages(images, product);
         return productMapper.toDto(
                 productRepository.save(product)
         );
     }
 
-    public void deleteProductImage(String publicId) {
+    public void deleteProductImage(Long prodId, String publicId) {
+        PImage pImage = pImageRepository.findByProduct_IdAndPublicId(prodId, publicId)
+                        .orElseThrow(
+                                () -> new ResourceNotFoundException("Product Image with public id [%s] and product id [%s] not found".formatted(publicId, prodId))
+                        );
+        pImageRepository.delete(pImage);
         imageService.deleteProductImage(publicId);
     }
 }

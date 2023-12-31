@@ -1,8 +1,13 @@
 package com.ecommerce.product.rating;
 
+import java.time.LocalDateTime;
+
 public record RatingDTO(
-        String email,
         byte star,
-        String comment
+        String comment,
+        LocalDateTime createdAt,
+        String email,
+        String name,
+        Boolean isModified
 ) {
 }

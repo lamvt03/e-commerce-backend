@@ -8,5 +8,4 @@ import java.util.Optional;
 
 @Repository
 public interface PCategoryRepository extends JpaRepository<PCategory, Long> {
-    PCategory findByNameIgnoreCase(String name);
 }
