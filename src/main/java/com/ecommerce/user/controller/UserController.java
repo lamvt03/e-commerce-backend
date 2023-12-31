@@ -1,6 +1,5 @@
 package com.ecommerce.user.controller;
 
-import com.ecommerce.cart.request.CartRequest;
 import com.ecommerce.coupon.CouponApplyRequest;
 import com.ecommerce.order.OrderCreateRequest;
 import com.ecommerce.product.model.ProductDTO;
@@ -11,8 +10,6 @@ import com.ecommerce.user.model.request.*;
 import com.ecommerce.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -28,7 +25,7 @@ public class UserController {
     private final UserService userService;
     private final FavoriteService favoriteService;
 
-    @PostMapping("register")
+    @PostMapping("/register")
     public ResponseEntity<UserDTO> registerUser (
            @Valid @RequestBody UserRegistration u
     ){
@@ -110,44 +107,27 @@ public class UserController {
         );
     }
 
-    @PostMapping("cart")
-    public ResponseEntity<?> addCart(
-            @AuthenticationPrincipal User user,
-            @RequestBody CartRequest request
-            ){
 
-        return ResponseEntity.ok(
-                userService.addCart(user.getId(), request)
-        );
-    }
-    @GetMapping("cart")
-    public ResponseEntity<?> getCart(
-            @AuthenticationPrincipal User user
-    ){
-        return ResponseEntity.ok(
-                userService.getCart(user.getId())
-        );
-    }
 
-    @PostMapping("/apply-coupon")
-    public ResponseEntity<?> applyCoupon(
-            @AuthenticationPrincipal User user,
-            @RequestBody CouponApplyRequest request
-            ){
-        return ResponseEntity.ok(
-                userService.applyCoupon(user.getId(), request)
-        );
-    }
+//    @PostMapping("/apply-coupon")
+////    public ResponseEntity<?> applyCoupon(
+////            @AuthenticationPrincipal User user,
+////            @RequestBody CouponApplyRequest request
+////            ){
+////        return ResponseEntity.ok(
+////                userService.applyCoupon(user.getId(), request)
+////        );
+////    }
 
-    @PostMapping("order")
-    public ResponseEntity<?> createOrder(
-            @AuthenticationPrincipal User user,
-            @RequestBody OrderCreateRequest request
-    ){
-        return ResponseEntity.ok(
-                userService.createOrder(user.getId(), request)
-        );
-    }
+//    @PostMapping("order")
+//    public ResponseEntity<?> createOrder(
+//            @AuthenticationPrincipal User user,
+//            @RequestBody OrderCreateRequest request
+//    ){
+//        return ResponseEntity.ok(
+//                userService.createOrder(user.getId(), request)
+//        );
+//    }
 
     @GetMapping("orders")
     public ResponseEntity<?> getOrders(

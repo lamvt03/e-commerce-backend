@@ -33,12 +33,14 @@ import java.util.Set;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final ProductMapper productMapper;
+
+    private final UserMapper userMapper;
+    private final UserService userService;
+
     private final RatingRepository ratingRepository;
     private final PImageRepository pImageRepository;
     private final PaginationService paginationService;
-    private final UserMapper userMapper;
-    private final UserService userService;
-    private final ProductMapper productMapper;
     private final ImageService imageService;
 
     public ProductDTO createProduct(ProductCreateRequest request){
@@ -47,7 +49,7 @@ public class ProductService {
                 productRepository.save(productEntity)
         );
     }
-    private Product findProductById(Long id){
+    public Product findProductById(Long id){
         return productRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("The product with id [%s] not exists"

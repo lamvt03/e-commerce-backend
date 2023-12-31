@@ -48,8 +48,6 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "orderBy")
     private Set<Order> orders = new HashSet<>();
 
-    @OneToOne(mappedBy = "user")
-    private Cart cart;
 
     public String getFullname(){
         return lastName + " " + firstName;

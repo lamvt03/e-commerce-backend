@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface PImageRepository extends JpaRepository<PImage, Long> {
     Optional<PImage> findByProduct_IdAndPublicId(Long productId, String publicKey);
     List<PImage> findAllByProduct_Id(Long productId);
+    Optional<PImage> findFirstByProduct_Id(Long productId);
 }

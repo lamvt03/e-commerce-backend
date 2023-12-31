@@ -16,4 +16,9 @@ public class PaginationService {
         );
         return PageRequest.of(paginationDTO.page()-1, paginationDTO.limit(), sort);
     }
+    public PaginationDTO getDefaultPaginationDTO(){
+        return new PaginationDTO(
+                1, 10, "desc", "createdAt"
+        );
+    }
 }

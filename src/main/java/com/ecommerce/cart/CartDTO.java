@@ -1,15 +1,15 @@
 package com.ecommerce.cart;
 
-import com.ecommerce.cart.cartProduct.CartProduct;
+import com.ecommerce.cart.product.CProduct;
+import com.ecommerce.cart.product.CProductDTO;
 
 import java.time.LocalDateTime;
 import java.util.Set;
 
 public record CartDTO(
-        Set<CartProduct> products,
+        Set<CProductDTO> products,
         double total,
-        String orderBy,
-        LocalDateTime lastModifiedAt,
+//        LocalDateTime lastModifiedAt,
         double totalAfterDiscount
 ) {
 }
