@@ -40,13 +40,10 @@ public class User implements UserDetails {
     private boolean isEnable = true;
     private boolean isNonLocked = true;
 
-    private String resetPasswordOTP;
-    private LocalDateTime resetPasswordExpired;
+//    @OneToMany(mappedBy = "postedBy")
+//    private Set<Rating> ratings = new HashSet<>();
 
-    @OneToMany(mappedBy = "postedBy")
-    private Set<Rating> ratings = new HashSet<>();
-
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(
             name = "user_wishlist",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -65,6 +62,10 @@ public class User implements UserDetails {
 
     @OneToOne(mappedBy = "user")
     private Cart cart;
+
+    public String getFullname(){
+        return lastName + " " + firstName;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -6,7 +6,11 @@ import com.ecommerce.order.OrderCreateRequest;
 import com.ecommerce.user.model.*;
 import com.ecommerce.user.model.request.*;
 import com.ecommerce.user.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -19,8 +23,13 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("register")
-    public UserDTO registerUser (@RequestBody UserRegistration u) {
-        return userService.registerUser(u);
+    public ResponseEntity<UserDTO> registerUser (
+           @Valid @RequestBody UserRegistration u
+    ){
+        UserDTO userDTO = userService.registerUser(u);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(userDTO);
     }
 
     @GetMapping("role")
@@ -29,33 +38,44 @@ public class UserController {
     }
 
     @GetMapping("{id}")
-    public UserDTO getUser(@PathVariable Long id){
-        UserDTO u = userService.getUser(id);
-        return u;
+    public ResponseEntity<UserDTO> getUser(@PathVariable Long id){
+        UserDTO userDTO = userService.getUser(id);
+        return ResponseEntity.ok(userDTO);
     }
 
     @DeleteMapping("{id}")
-    public UserDTO deleteUser(@PathVariable Long id){
-        UserDTO u = userService.deleteUser(id);
-        return u;
+    public ResponseEntity<UserDTO> deleteUser(@PathVariable Long id){
+        userService.deleteUser(id);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
     }
 
-    @PostMapping("change-password")
-    public UserDTO changePassword(
+    @PatchMapping("/password")
+    public ResponseEntity<UserDTO> changePassword(
             @AuthenticationPrincipal User authenticatedUser,
-            @RequestBody UserPasswordChange userPasswordChange
+            @Valid @RequestBody UserPasswordChange userPasswordChange
     ){
-        return userService.changePassword(authenticatedUser, userPasswordChange);
+        UserDTO userDTO = userService.changePassword(authenticatedUser, userPasswordChange);
+        return ResponseEntity.ok(userDTO);
     }
-    @PostMapping("forgot-password")
-    public String forgotPassword(@RequestBody UserPasswordForgot userPasswordForgot){
-        return userService.handleForgotPassword(userPasswordForgot.email());
-    }
-    @PostMapping("reset-password")
-    public String resetPassword(
-            @RequestBody UserPasswordReset userPasswordReset
+    @PostMapping("password/forgot")
+    public ResponseEntity<?> forgotPassword(
+            @Valid @RequestBody UserPasswordForgot userPasswordForgot
     ){
-        return userService.handleResetPassword(userPasswordReset);
+        userService.handleForgotPassword(userPasswordForgot);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
+    }
+    @PostMapping("password/reset")
+    public ResponseEntity<?> resetPassword(
+            @Valid @RequestBody UserPasswordReset userPasswordReset
+    ){
+        userService.handleResetPassword(userPasswordReset);
+        return ResponseEntity
+        .status(HttpStatus.NO_CONTENT)
+        .build();
     }
 
     @GetMapping("wishlist")

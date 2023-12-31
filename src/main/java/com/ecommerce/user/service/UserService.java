@@ -12,16 +12,16 @@ import com.ecommerce.exception.ResourceNotFoundException;
 import com.ecommerce.order.*;
 import com.ecommerce.order.orderPaymentIntent.OrderPaymentIntent;
 import com.ecommerce.order.orderProduct.OrderProduct;
-import com.ecommerce.order.orderProduct.OrderProductMapper;
 import com.ecommerce.product.ProductMapper;
 import com.ecommerce.product.ProductRepository;
 import com.ecommerce.product.model.Product;
 import com.ecommerce.product.model.ProductDTO;
 import com.ecommerce.user.UserRepository;
 import com.ecommerce.user.model.*;
-import com.ecommerce.user.model.request.UserPasswordChange;
-import com.ecommerce.user.model.request.UserPasswordReset;
-import com.ecommerce.user.model.request.UserRegistration;
+import com.ecommerce.user.model.request.*;
+import com.ecommerce.user.otp.Otp;
+import com.ecommerce.user.otp.OtpRepository;
+import com.ecommerce.util.RandomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,9 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Optional;
-import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -47,6 +45,8 @@ public class UserService {
     private final ProductMapper productMapper;
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
+    private final RandomService randomService;
+    private final OtpRepository otpRepository;
 
     public UserDTO registerUser(UserRegistration userRegistration){
         if(!userRepository.existsByEmail(userRegistration.email())){
@@ -59,29 +59,27 @@ public class UserService {
     }
 
     public User findUserById(Long id){
-        User u = userRepository
+        return userRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("The user with id [%s] not exists"
                         .formatted(id)));
-        return u;
     }
     public User saveUser(User user){
         return userRepository.save(user);
     }
     public User findUserByEmail(String email){
-        User u = userRepository.findByEmail(email)
+        return userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("The user with email [%s] not exists"
                         .formatted(email)));
-        return u;
     }
     public UserDTO getUser(Long id){
-        User u = findUserById(id);
-        return userMapper.toDto(u);
+        User user = findUserById(id);
+        return userMapper.toDto(user);
     }
-    public UserDTO deleteUser(Long id){
-        User u = findUserById(id);
-        u.setEnable(false);
-        return userMapper.toDto(userRepository.save(u));
+    public void deleteUser(Long id){
+        User user = findUserById(id);
+        user.setEnable(false);
+        userMapper.toDto(userRepository.save(user));
     }
     public String lockUserWithId(Long id){
         User u = findUserById(id);
@@ -110,41 +108,32 @@ public class UserService {
                 .findFirst()
                 .orElseThrow(() -> new BadCredentialsException("Old password wrong"));
     }
-    public String handleForgotPassword(String email){
-        User u = findUserByEmail(email);
-        String otp = createResetPasswordOTP();
-        u.setResetPasswordOTP(otp);
-        u.setResetPasswordExpired(LocalDateTime.now().plus(5, ChronoUnit.MINUTES));
-        userRepository.save(u);
+    public void handleForgotPassword(UserPasswordForgot userPasswordForgot){
+        User u = findUserByEmail(userPasswordForgot.email());
+        String otpCode = randomService.randomOtpValue(6);
+        Otp userOtp = Otp.builder()
+                .code(otpCode)
+                .expiredAt(LocalDateTime.now().plusMinutes(5))
+                .user(u)
+                .build();
+        otpRepository.save(userOtp);
+
         mailService.sendSimpleMessage(
-                email,
+                userPasswordForgot.email(),
                 "Reset password request",
-                "Your reset password code is %s".formatted(otp)
+                "Your reset password code is %s".formatted(otpCode)
         );
-        return "Please check your email";
-    }
-    private String createResetPasswordOTP(){
-        Random rd = new Random();
-        int otpCode = rd.nextInt(900000) + 100000;
-        return String.format("%6d", otpCode);
     }
 
-    public String handleResetPassword(UserPasswordReset userPasswordReset){
-        User user = userRepository.findByEmail(userPasswordReset.email())
-                .filter(u -> u.getResetPasswordExpired().isAfter(LocalDateTime.now()))
-                .filter(u -> u.getResetPasswordOTP().equals(userPasswordReset.otp()))
-                .map(u -> {
-                    u.setPassword(passwordEncoder.encode(userPasswordReset.newPassword()));
-                    u.setResetPasswordOTP(null);
-                    u.setResetPasswordExpired(null);
-                    return userRepository.save(u);
-                })
+    public void handleResetPassword(UserPasswordReset userPasswordReset){
+        User user = findUserByEmail(userPasswordReset.email());
+        Otp otp = otpRepository.findByUser_Id(user.getId())
+                .filter(o -> o.getExpiredAt().isAfter(LocalDateTime.now()))
+                .filter(o -> o.getCode().equals(userPasswordReset.otpCode()))
                 .orElseThrow(() -> new RuntimeException("Invalid reset password token"));
-
-        if (Optional.ofNullable(user).isPresent()){
-            return "Reset password successfully";
-        }
-        return "failure";
+        user.setPassword(passwordEncoder.encode(userPasswordReset.newPassword()));
+        userRepository.save(user);
+        otpRepository.delete(otp);
     }
 
     public Set<ProductDTO> getWishlist(Long id) {
@@ -264,4 +253,6 @@ public class UserService {
                 .map(orderMapper::toDto)
                 .collect(Collectors.toSet());
     }
+
+
 }

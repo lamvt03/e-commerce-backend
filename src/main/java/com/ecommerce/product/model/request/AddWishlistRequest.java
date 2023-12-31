@@ -1,6 +1,6 @@
 package com.ecommerce.product.model.request;
 
-public record AddToWishlistRequest(
+public record AddWishlistRequest(
         Long productId
 ) {
 }
