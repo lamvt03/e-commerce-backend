@@ -47,6 +47,10 @@ public class UserService {
     private final ProductRepository productRepository;
     private final RandomService randomService;
     private final OtpRepository otpRepository;
+    private final CartProductRepository cartProductRepository;
+    private final CartMapper cartMapper;
+    private final OrderRepository orderRepository;
+    private final OrderMapper orderMapper;
 
     public UserDTO registerUser(UserRegistration userRegistration){
         if(!userRepository.existsByEmail(userRegistration.email())){
@@ -142,8 +146,6 @@ public class UserService {
                 .map(productMapper::toDto)
                 .collect(Collectors.toSet());
     }
-    private final CartProductRepository cartProductRepository;
-    private final CartMapper cartMapper;
 
     public CartDTO addCart(Long id, CartRequest request) {
         Cart cart = cartRepository.findByUser_Id(id).orElse(null);
@@ -202,8 +204,6 @@ public class UserService {
         );
     }
 
-    private final OrderRepository orderRepository;
-    private final OrderMapper orderMapper;
     public Object createOrder(Long userId, OrderCreateRequest request) {
         if(!request.COD())
             throw new RuntimeException("Unsupported payment method");
@@ -253,6 +253,4 @@ public class UserService {
                 .map(orderMapper::toDto)
                 .collect(Collectors.toSet());
     }
-
-
 }

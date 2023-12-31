@@ -3,6 +3,9 @@ package com.ecommerce.user.controller;
 import com.ecommerce.cart.request.CartRequest;
 import com.ecommerce.coupon.CouponApplyRequest;
 import com.ecommerce.order.OrderCreateRequest;
+import com.ecommerce.product.model.ProductDTO;
+import com.ecommerce.user.favorite.FavoriteDTO;
+import com.ecommerce.user.favorite.FavoriteService;
 import com.ecommerce.user.model.*;
 import com.ecommerce.user.model.request.*;
 import com.ecommerce.user.service.UserService;
@@ -15,12 +18,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
 
     private final UserService userService;
+    private final FavoriteService favoriteService;
 
     @PostMapping("register")
     public ResponseEntity<UserDTO> registerUser (
@@ -76,6 +82,23 @@ public class UserController {
         return ResponseEntity
         .status(HttpStatus.NO_CONTENT)
         .build();
+    }
+
+    @PostMapping("/like/{productId}")
+    public ResponseEntity<FavoriteDTO> likeProduct(
+            @AuthenticationPrincipal User user,
+            @PathVariable Long productId
+    ){
+        FavoriteDTO favoriteDTO = favoriteService.likeProduct(user, productId);
+        return ResponseEntity.ok(favoriteDTO);
+    }
+
+    @GetMapping("/favorite")
+    public ResponseEntity<List<ProductDTO>> getFavoriteProducts(
+            @AuthenticationPrincipal User user
+    ){
+        List<ProductDTO> favoriteProducts = favoriteService.getFavoriteProducts(user.getId());
+        return ResponseEntity.ok(favoriteProducts);
     }
 
     @GetMapping("wishlist")

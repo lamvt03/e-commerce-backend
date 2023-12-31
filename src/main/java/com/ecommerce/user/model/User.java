@@ -1,16 +1,13 @@
 package com.ecommerce.user.model;
 
-//import com.ecommerce.blog.model.Blog;
 import com.ecommerce.cart.Cart;
 import com.ecommerce.order.Order;
 import com.ecommerce.product.model.Product;
-import com.ecommerce.product.rating.Rating;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Setter
@@ -40,9 +37,6 @@ public class User implements UserDetails {
     private boolean isEnable = true;
     private boolean isNonLocked = true;
 
-//    @OneToMany(mappedBy = "postedBy")
-//    private Set<Rating> ratings = new HashSet<>();
-
     @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(
             name = "user_wishlist",
@@ -50,12 +44,6 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "product_id")
     )
     private Set<Product> wishlist = new HashSet<>();
-
-//    @ManyToMany(mappedBy = "likes")
-//    private Set<Blog> likedBlogs = new HashSet<>();
-//
-//    @ManyToMany(mappedBy = "dislikes")
-//    private Set<Blog> dislikedBlogs = new HashSet<>();
 
     @OneToMany(mappedBy = "orderBy")
     private Set<Order> orders = new HashSet<>();

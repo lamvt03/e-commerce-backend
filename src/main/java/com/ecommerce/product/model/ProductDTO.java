@@ -21,6 +21,7 @@ public record ProductDTO(
         Set<String> colors,
         LocalDateTime lastModifiedAt,
         float ratingPoint,
+        Boolean isLiked,
         Set<RatingDTO> ratings,
         List<PImageDTO> images
 ) {
