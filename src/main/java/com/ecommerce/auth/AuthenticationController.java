@@ -2,6 +2,7 @@ package com.ecommerce.auth;
 
 import com.ecommerce.auth.model.AuthenticationRequest;
 import com.ecommerce.auth.model.AuthenticationResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +18,9 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest request){
+    public ResponseEntity<AuthenticationResponse> login(
+           @Valid @RequestBody AuthenticationRequest request
+    ){
         AuthenticationResponse resp = authenticationService.login(request);
         return ResponseEntity.ok(resp);
     }

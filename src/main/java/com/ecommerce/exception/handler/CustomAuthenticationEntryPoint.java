@@ -24,7 +24,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         if(authHeader == null || authHeader.isBlank())
             msg += "You haven't attach jwt token";
         else
-            msg += "Your token is invalid";
+            msg += "Your token not valid";
 
         Map<String, String> errMap = Map.of(
                 "code", String.valueOf(HttpStatus.UNAUTHORIZED.value()),

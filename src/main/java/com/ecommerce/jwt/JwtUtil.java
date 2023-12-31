@@ -25,6 +25,9 @@ public class JwtUtil {
     @Value("${jwt.token-cycle-seconds}")
     private Long tokenCycleSeconds;
 
+    @Value("${jwt.refresh-token-cycle-seconds}")
+    private Long refreshTokenCycleSeconds;
+
     private Key getSigningKey(){
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
@@ -57,6 +60,20 @@ public class JwtUtil {
 
     public String generateToken(UserDetails userDetails){
         return generateToken(new HashMap<>() ,userDetails);
+    }
+
+    public String generateRefreshToken(Map<String, Object> claims, UserDetails userDetails){
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(Date.from(Instant.now()))
+                .setExpiration(Date.from(Instant.now().plusSeconds(refreshTokenCycleSeconds)))
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public String generateRefreshToken(UserDetails userDetails){
+        return generateRefreshToken(new HashMap<>() ,userDetails);
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails){

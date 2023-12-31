@@ -26,7 +26,10 @@ public class AuthenticationService {
                     request.password()));
 
         User user = userRepository.findByEmail(request.email())
-                .orElseThrow(() -> new ResourceNotFoundException("Username or password incorrect!"));
-        return new AuthenticationResponse(jwtUtil.generateToken(user));
+                .orElseThrow();
+        return new AuthenticationResponse(
+                jwtUtil.generateToken(user),
+                jwtUtil.generateRefreshToken(user)
+        );
     }
 }

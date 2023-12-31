@@ -1,5 +1,6 @@
 package com.ecommerce.auth.model;
 
 public record AuthenticationResponse(
-        String token
+        String accessToken,
+        String refreshToken
 ){ }
