@@ -1,7 +1,6 @@
 package com.ecommerce.user.model;
 
-import com.ecommerce.cart.Cart;
-import com.ecommerce.order.Order;
+import com.ecommerce.order.model.Order;
 import com.ecommerce.product.model.Product;
 import jakarta.persistence.*;
 import lombok.*;

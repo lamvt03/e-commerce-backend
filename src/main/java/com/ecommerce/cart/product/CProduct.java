@@ -19,14 +19,17 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "cart_product")
 public class CProduct {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private Long productId;
+
     private Long colorId;
 
     private int quantity;
+
     private double price;
 
     @ManyToOne

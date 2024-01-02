@@ -22,6 +22,7 @@ public class CProductMapper {
         Product product = productService.findProductById(entity.getProductId());
         return new CProductDTO(
                 entity.getId(),
+                product.getId(),
                 product.getTitle(),
                 pColorRepository.findById(entity.getColorId())
                                 .orElseThrow()

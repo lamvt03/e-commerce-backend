@@ -1,4 +1,4 @@
-package com.ecommerce.user.service;
+package com.ecommerce.util;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;

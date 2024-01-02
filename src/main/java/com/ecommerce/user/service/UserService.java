@@ -1,24 +1,18 @@
 package com.ecommerce.user.service;
 
 import com.ecommerce.cart.*;
-import com.ecommerce.cart.product.CProductRepository;
-import com.ecommerce.coupon.Coupon;
-import com.ecommerce.coupon.CouponApplyRequest;
 import com.ecommerce.coupon.CouponRepository;
 import com.ecommerce.exception.DuplicateResourceException;
 import com.ecommerce.exception.ResourceNotFoundException;
 import com.ecommerce.order.*;
-import com.ecommerce.order.orderPaymentIntent.OrderPaymentIntent;
-import com.ecommerce.order.orderProduct.OrderProduct;
 import com.ecommerce.product.ProductMapper;
-import com.ecommerce.product.ProductRepository;
-import com.ecommerce.product.model.Product;
 import com.ecommerce.product.model.ProductDTO;
 import com.ecommerce.user.UserRepository;
 import com.ecommerce.user.model.*;
 import com.ecommerce.user.model.request.*;
 import com.ecommerce.user.otp.Otp;
 import com.ecommerce.user.otp.OtpRepository;
+import com.ecommerce.util.MailService;
 import com.ecommerce.util.RandomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -45,9 +39,6 @@ public class UserService {
     private final CartRepository cartRepository;
     private final RandomService randomService;
     private final OtpRepository otpRepository;
-
-    private final OrderRepository orderRepository;
-    private final OrderMapper orderMapper;
 
     public UserDTO registerUser(UserRegistration userRegistration){
         if(!userRepository.existsByEmail(userRegistration.email())){
@@ -149,21 +140,6 @@ public class UserService {
                 .collect(Collectors.toSet());
     }
 
-    private final CouponRepository couponRepository;
-//    public CartDTO applyCoupon(Long userId, CouponApplyRequest request) {
-//        Coupon coupon = couponRepository.findByName(request.name())
-//                .orElseThrow(
-//                        () -> new ResourceNotFoundException("coupon with name [%s] not exists".formatted(request.name()))
-//                );
-//        User user = findUserById(userId);
-//        Cart cart = user.getCart();
-//        double totalAfterDiscount = cart.getTotal() * (1 - coupon.getDiscount() / 100.0);
-//        cart.setTotalAfterDiscount(totalAfterDiscount);
-//
-//        return cartMapper.toDto(
-//                cartRepository.save(cart)
-//        );
-//    }
 
 //    public Object createOrder(Long userId, OrderCreateRequest request) {
 //        if(!request.COD())
@@ -209,9 +185,9 @@ public class UserService {
 //        );
 //    }
 
-    public Object getOrders(Long userId) {
-        return orderRepository.findAllByOrderBy_Id(userId).stream()
-                .map(orderMapper::toDto)
-                .collect(Collectors.toSet());
-    }
+//    public Object getOrders(Long userId) {
+//        return orderRepository.findAllByOrderBy_Id(userId).stream()
+//                .map(orderMapper::toDto)
+//                .collect(Collectors.toSet());
+//    }
 }

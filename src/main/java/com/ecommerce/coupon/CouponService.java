@@ -27,6 +27,13 @@ public class CouponService {
         return couponRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Coupon with id [%s] not found".formatted(id)));
     }
+
+    public Coupon findCouponByCode(String code){
+        return couponRepository.findByCode(code)
+                .filter(coupon -> coupon.getQuantity() > 0)
+                .orElseThrow(() -> new ResourceNotFoundException("coupon with code %s not found".formatted(code)));
+    }
+
     public CouponDTO getCouponById(Long id) {
         Coupon coupon = findCouponById(id);
         return couponMapper.toDto(coupon);
@@ -55,5 +62,9 @@ public class CouponService {
         return couponRepository.findAll().stream()
                 .map(couponMapper::toDto)
                 .toList();
+    }
+
+    public Coupon save(Coupon coupon){
+        return couponRepository.save(coupon);
     }
 }

@@ -23,6 +23,7 @@ import java.time.LocalDateTime;
 public class Coupon extends AbstractEntity {
 
     private String name;
+    private String code;
     private LocalDateTime expiryAt;
     private int discount;
     private int quantity;

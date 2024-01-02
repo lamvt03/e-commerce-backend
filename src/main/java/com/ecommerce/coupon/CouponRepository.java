@@ -7,5 +7,5 @@ import java.util.Optional;
 
 @Repository
 public interface CouponRepository extends JpaRepository<Coupon, Long> {
-    Optional<Coupon> findByNameIgnoreCase(String name);
+    Optional<Coupon> findByCode(String code);
 }

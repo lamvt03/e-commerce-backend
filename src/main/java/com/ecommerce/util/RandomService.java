@@ -23,4 +23,16 @@ public class RandomService {
 
         return sb.toString();
     }
+    public String randomCouponCode(int length){
+        final String LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        StringBuilder sb = new StringBuilder(length);
+
+        for (int i = 0; i < length; i++) {
+            int randomIndex = random.nextInt(LETTERS.length());
+            char randomLetter = LETTERS.charAt(randomIndex);
+            sb.append(randomLetter);
+        }
+
+        return sb.toString();
+    }
 }

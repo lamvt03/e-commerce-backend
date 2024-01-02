@@ -3,6 +3,9 @@ package com.ecommerce.cart;
 import com.ecommerce.cart.product.CProduct;
 import com.ecommerce.cart.product.CProductRepository;
 import com.ecommerce.cart.request.CartProductRequest;
+import com.ecommerce.coupon.Coupon;
+import com.ecommerce.coupon.CouponService;
+import com.ecommerce.coupon.request.CouponApplyRequest;
 import com.ecommerce.exception.ResourceNotFoundException;
 import com.ecommerce.product.ProductService;
 import com.ecommerce.product.model.Product;
@@ -27,6 +30,8 @@ public class CartService {
 
     private final PaginationService paginationService;
 
+    private final CouponService couponService;
+
     public CartDTO addCart(Long userId, CartProductRequest request) {
         Cart cart = cartRepository.findByUser_Id(userId)
                 .orElseThrow(EntityNotFoundException::new);
@@ -48,7 +53,7 @@ public class CartService {
         cProductRepository.save(cProduct);
 
         double total = cProductRepository.findAllByCart_Id(cart.getId()).stream()
-                .map(CProduct::getPrice)
+                .map(p -> p.getPrice() * p.getQuantity())
                 .reduce((double) 0, Double::sum);
 
         cart.setTotal(total);
@@ -71,5 +76,21 @@ public class CartService {
                 .orElseThrow(EntityNotFoundException::new);
         cProductRepository.deleteById(productId);
         return cartMapper.toDto(cart, paginationService.getDefaultPaginationDTO());
+    }
+
+    public CartDTO applyCoupon(Long userId, CouponApplyRequest request) {
+        Coupon coupon = couponService.findCouponByCode(request.code());
+        Cart cart = cartRepository.findByUser_Id(userId)
+                .orElseThrow();
+        double totalAfterDiscount = cart.getTotal() * (1 - coupon.getDiscount() / 100.0);
+
+        coupon.setQuantity(coupon.getQuantity() - 1);
+        couponService.save(coupon);
+
+        cart.setTotalAfterDiscount(totalAfterDiscount);
+        return cartMapper.toDto(
+                cartRepository.save(cart),
+                paginationService.getDefaultPaginationDTO()
+        );
     }
 }

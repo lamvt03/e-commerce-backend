@@ -1,7 +1,5 @@
 package com.ecommerce.user.controller;
 
-import com.ecommerce.coupon.CouponApplyRequest;
-import com.ecommerce.order.OrderCreateRequest;
 import com.ecommerce.product.model.ProductDTO;
 import com.ecommerce.user.favorite.FavoriteDTO;
 import com.ecommerce.user.favorite.FavoriteService;
@@ -108,17 +106,6 @@ public class UserController {
     }
 
 
-
-//    @PostMapping("/apply-coupon")
-////    public ResponseEntity<?> applyCoupon(
-////            @AuthenticationPrincipal User user,
-////            @RequestBody CouponApplyRequest request
-////            ){
-////        return ResponseEntity.ok(
-////                userService.applyCoupon(user.getId(), request)
-////        );
-////    }
-
 //    @PostMapping("order")
 //    public ResponseEntity<?> createOrder(
 //            @AuthenticationPrincipal User user,
@@ -129,12 +116,12 @@ public class UserController {
 //        );
 //    }
 
-    @GetMapping("orders")
-    public ResponseEntity<?> getOrders(
-            @AuthenticationPrincipal User user
-    ){
-        return ResponseEntity.ok(
-                userService.getOrders(user.getId())
-        );
-    }
+//    @GetMapping("orders")
+//    public ResponseEntity<?> getOrders(
+//            @AuthenticationPrincipal User user
+//    ){
+//        return ResponseEntity.ok(
+//                userService.getOrders(user.getId())
+//        );
+//    }
 }

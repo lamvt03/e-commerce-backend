@@ -1,6 +1,7 @@
 package com.ecommerce.cart;
 
 import com.ecommerce.cart.request.CartProductRequest;
+import com.ecommerce.coupon.request.CouponApplyRequest;
 import com.ecommerce.user.model.User;
 import com.ecommerce.util.model.PaginationDTO;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +21,7 @@ public class CartController {
             @RequestBody CartProductRequest request
     ){
         CartDTO cartDTO = cartService.addCart(user.getId(), request);
-        return ResponseEntity.ok(
-                cartDTO
-        );
+        return ResponseEntity.ok(cartDTO);
     }
     @GetMapping
     public ResponseEntity<CartDTO> getCart(
@@ -34,9 +33,7 @@ public class CartController {
     ){
         PaginationDTO paginationDTO = new PaginationDTO(page, limit, sortDirection, sortBy);
         CartDTO cartDTO = cartService.getCart(user.getId(), paginationDTO);
-        return ResponseEntity.ok(
-                cartDTO
-        );
+        return ResponseEntity.ok(cartDTO);
     }
 
     @DeleteMapping("/product/{productId}")
@@ -46,8 +43,14 @@ public class CartController {
 
     ){
         CartDTO cartDTO = cartService.deleteCartProduct(user.getId(), productId);
-        return ResponseEntity.ok(
-                cartDTO
-        );
+        return ResponseEntity.ok(cartDTO);
+    }
+    @PostMapping("/apply")
+    public ResponseEntity<CartDTO> applyCoupon(
+            @AuthenticationPrincipal User user,
+            @RequestBody CouponApplyRequest request
+            ){
+        CartDTO cartDTO = cartService.applyCoupon(user.getId(), request);
+        return ResponseEntity.ok(cartDTO);
     }
 }
