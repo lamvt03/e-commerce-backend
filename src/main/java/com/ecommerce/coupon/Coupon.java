@@ -25,6 +25,7 @@ public class Coupon extends AbstractEntity {
     private String name;
     private LocalDateTime expiryAt;
     private int discount;
+    private int quantity;
 
     @PrePersist
     private void prePersist(){

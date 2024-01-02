@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 public class CartController {
 
     private final CartService cartService;
-    @PostMapping("")
+    @PostMapping
     public ResponseEntity<CartDTO> addProductCart(
             @AuthenticationPrincipal User user,
             @RequestBody CartProductRequest request
@@ -24,7 +24,7 @@ public class CartController {
                 cartDTO
         );
     }
-    @GetMapping("")
+    @GetMapping
     public ResponseEntity<CartDTO> getCart(
             @AuthenticationPrincipal User user,
             @RequestParam(defaultValue = "1") int page,

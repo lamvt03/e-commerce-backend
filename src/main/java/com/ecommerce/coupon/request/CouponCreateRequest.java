@@ -1,8 +1,9 @@
-package com.ecommerce.coupon;
+package com.ecommerce.coupon.request;
 
 public record CouponCreateRequest(
         String name,
         int lifeCycle,
-        int discount
+        int discount,
+        int quantity
 ) {
 }
