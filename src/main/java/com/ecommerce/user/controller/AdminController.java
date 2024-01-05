@@ -80,4 +80,16 @@ public class AdminController {
         return ResponseEntity.ok(users);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<User>> searchUser(
+            @RequestParam(name = "q") String keyword,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "5") int limit,
+            @RequestParam(defaultValue = "desc", name = "sort") String sortDirection,
+            @RequestParam(defaultValue = "createdAt") String sortBy
+    ){
+        PaginationDTO paginationDTO = new PaginationDTO(page, limit, sortDirection, sortBy);
+        List<User> users = userService.searchUsers(keyword, paginationDTO);
+        return ResponseEntity.ok(users);
+    }
 }

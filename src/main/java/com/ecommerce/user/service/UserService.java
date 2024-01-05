@@ -170,4 +170,9 @@ public class UserService {
         admin.setEnable(!admin.isEnabled());
         userRepository.save(admin);
     }
+
+    public List<User> searchUsers(String keyword, PaginationDTO paginationDTO) {
+        Pageable pageable = paginationService.getPageable(paginationDTO);
+        return userRepository.findWithKeyword(keyword, pageable);
+    }
 }
