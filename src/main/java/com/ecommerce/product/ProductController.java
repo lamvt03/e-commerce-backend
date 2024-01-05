@@ -119,6 +119,18 @@ public class ProductController {
         return ResponseEntity.ok(productDTOS);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<ProductDTO>> searchProducts(
+            @RequestParam("q") String keyword,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int limit,
+            @RequestParam(defaultValue = "desc", name = "sort") String sortDirection,
+            @RequestParam(defaultValue = "createdAt") String sortBy
+    ){
+        PaginationDTO paginationDTO = new PaginationDTO(page, limit, sortDirection, sortBy);
+        List<ProductDTO> productDTOS = productService.searchProductByKeyword(keyword, paginationDTO);
+        return ResponseEntity.ok(productDTOS);
+    }
 
     @PutMapping("wishlist")
     public ResponseEntity<?> addToWishList(

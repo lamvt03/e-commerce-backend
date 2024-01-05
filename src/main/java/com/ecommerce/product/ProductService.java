@@ -197,4 +197,11 @@ public class ProductService {
                 productRepository.save(product)
         );
     }
+
+    public List<ProductDTO> searchProductByKeyword(String keyword, PaginationDTO paginationDTO) {
+        Pageable pageable = paginationService.getPageable(paginationDTO);
+        return productRepository.findWithKeyword(keyword, pageable).stream()
+                .map(productMapper::toDto)
+                .toList();
+    }
 }

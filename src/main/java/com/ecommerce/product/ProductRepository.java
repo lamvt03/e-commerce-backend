@@ -1,5 +1,6 @@
 package com.ecommerce.product;
 
+import com.ecommerce.user.model.User;
 import com.ecommerce.util.model.FilterDTO;
 import com.ecommerce.product.model.Product;
 import org.springframework.data.domain.Pageable;
@@ -25,4 +26,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByBrand_Code(String code, Pageable pageable);
 
     List<Product> findByIsDeleted(boolean isDeleted, Pageable pageable);
+
+    @Query("SELECT p FROM Product p WHERE " +
+            "(UPPER(p.title) LIKE CONCAT('%', UPPER(:keyword), '%')) ")
+    List<Product> findWithKeyword(@Param("keyword") String keyword, Pageable pageable);
 }
