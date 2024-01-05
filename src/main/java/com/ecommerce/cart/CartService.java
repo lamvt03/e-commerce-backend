@@ -84,10 +84,8 @@ public class CartService {
                 .orElseThrow();
         double totalAfterDiscount = cart.getTotal() * (1 - coupon.getDiscount() / 100.0);
 
-        coupon.setQuantity(coupon.getQuantity() - 1);
-        couponService.save(coupon);
-
         cart.setTotalAfterDiscount(totalAfterDiscount);
+        cart.setCouponId(coupon.getId());
         return cartMapper.toDto(
                 cartRepository.save(cart),
                 paginationService.getDefaultPaginationDTO()

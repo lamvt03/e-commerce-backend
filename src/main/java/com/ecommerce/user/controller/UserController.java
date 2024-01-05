@@ -106,16 +106,6 @@ public class UserController {
     }
 
 
-//    @PostMapping("order")
-//    public ResponseEntity<?> createOrder(
-//            @AuthenticationPrincipal User user,
-//            @RequestBody OrderCreateRequest request
-//    ){
-//        return ResponseEntity.ok(
-//                userService.createOrder(user.getId(), request)
-//        );
-//    }
-
 //    @GetMapping("orders")
 //    public ResponseEntity<?> getOrders(
 //            @AuthenticationPrincipal User user

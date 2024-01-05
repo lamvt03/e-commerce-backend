@@ -16,9 +16,17 @@ public class PaginationService {
         );
         return PageRequest.of(paginationDTO.page()-1, paginationDTO.limit(), sort);
     }
+    public Pageable getPageable(int page, int limit){
+        Sort sort = Sort.by(
+                Sort.Direction.fromString("desc"),
+                "createdAt"
+        );
+        return PageRequest.of(page - 1, limit, sort);
+    }
     public PaginationDTO getDefaultPaginationDTO(){
         return new PaginationDTO(
                 1, 10, "desc", "createdAt"
         );
     }
+
 }

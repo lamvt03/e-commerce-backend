@@ -8,8 +8,10 @@ import java.util.Set;
 
 public record CartDTO(
         Set<CProductDTO> products,
+
+        String couponCode,
+        String couponName,
         double total,
-//        LocalDateTime lastModifiedAt,
         double totalAfterDiscount
 ) {
 }

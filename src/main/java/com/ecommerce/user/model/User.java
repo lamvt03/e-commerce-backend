@@ -44,10 +44,6 @@ public class User implements UserDetails {
     )
     private Set<Product> wishlist = new HashSet<>();
 
-    @OneToMany(mappedBy = "orderBy")
-    private Set<Order> orders = new HashSet<>();
-
-
     public String getFullname(){
         return lastName + " " + firstName;
     }

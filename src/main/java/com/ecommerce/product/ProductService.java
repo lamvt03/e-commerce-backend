@@ -124,7 +124,11 @@ public class ProductService {
                             user,
                             product);
             ratingRepository.save(rating);
+
+
         }
+
+//            update rating point
         List<Rating> ratings = ratingRepository.findAllByProduct_Id(request.productId());
         int ratingSum = ratings.stream()
                 .mapToInt(Rating::getStar)
@@ -132,7 +136,10 @@ public class ProductService {
         int ratingCount = ratings.size();
         float ratingPoint = (float) (1.0 * ratingSum / ratingCount);
         product.setRatingPoint(ratingPoint);
-        return productMapper.toDto(productRepository.save(product));
+
+        return productMapper.toDto(
+                productRepository.save(product)
+        );
     }
 
     public ProductDTO uploadProductImages(Long prodId, MultipartFile[] images){

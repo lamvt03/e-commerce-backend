@@ -21,8 +21,10 @@ import java.util.Set;
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Long id;
+    private Long id;
 
+    @Column
+    private Long couponId;
     private double total;
     private double totalAfterDiscount;
 

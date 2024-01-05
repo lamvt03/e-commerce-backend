@@ -1,4 +1,4 @@
-package com.ecommerce.order;
+package com.ecommerce.order.model;
 
 import lombok.Getter;
 
@@ -10,7 +10,7 @@ public enum OrderStatus {
     DISPATCHED("Dispatched"),
     CANCELLED("Cancelled"),
     DELIVERED("Delivered");
-    private String value;
+    private final String value;
     private OrderStatus(String value){
         this.value = value;
     }
