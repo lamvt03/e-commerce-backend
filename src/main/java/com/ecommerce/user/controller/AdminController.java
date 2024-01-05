@@ -1,12 +1,13 @@
 package com.ecommerce.user.controller;
 
+import com.ecommerce.user.model.User;
 import com.ecommerce.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -14,14 +15,23 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminController {
 
     private final UserService userService;
-    @PutMapping("lock/{userId}")
-    public ResponseEntity<String> lockUser(@PathVariable Long userId){
-        String msg = userService.lockUserWithId(userId);
-        return ResponseEntity.ok(msg);
+    @PutMapping("activate/{userId}")
+    public ResponseEntity<?> activateOrDeactivateUser(@PathVariable Long userId){
+        userService.activateOrDeactivateUser(userId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                .build();
     }
-    @PutMapping("unlock/{userId}")
-    public ResponseEntity<String> unlockUser(@PathVariable Long userId){
-        String msg = userService.unlockUserWithId(userId);
-        return ResponseEntity.ok(msg);
+
+    @GetMapping("/user/activate")
+    public ResponseEntity<List<User>> getActivateUserList(){
+        List<User> users = userService.getActivateUserList();
+        return ResponseEntity.ok(users);
     }
+
+    @GetMapping("/user/deactivate")
+    public ResponseEntity<List<User>> getDeactivateUserList(){
+        List<User> users = userService.getDeactivateUserList();
+        return ResponseEntity.ok(users);
+    }
+
 }

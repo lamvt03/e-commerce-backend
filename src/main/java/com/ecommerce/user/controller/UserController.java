@@ -14,6 +14,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @RestController
@@ -96,22 +97,11 @@ public class UserController {
         return ResponseEntity.ok(favoriteProducts);
     }
 
-    @GetMapping("wishlist")
-    public ResponseEntity<?> getWishlist(
+    @GetMapping("/wishlist")
+    public ResponseEntity<Set<ProductDTO>> getWishlist(
             @AuthenticationPrincipal User user
     ){
-        return ResponseEntity.ok(
-                userService.getWishlist(user.getId())
-        );
+        Set<ProductDTO> wishlist = userService.getWishlist(user.getId());
+        return ResponseEntity.ok(wishlist);
     }
-
-
-//    @GetMapping("orders")
-//    public ResponseEntity<?> getOrders(
-//            @AuthenticationPrincipal User user
-//    ){
-//        return ResponseEntity.ok(
-//                userService.getOrders(user.getId())
-//        );
-//    }
 }

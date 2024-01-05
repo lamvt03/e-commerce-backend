@@ -1,7 +1,7 @@
 package com.ecommerce.user.model;
 
-import com.ecommerce.order.model.Order;
 import com.ecommerce.product.model.Product;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,6 +28,7 @@ public class User implements UserDetails {
     @Column(unique = true)
     private String mobile;
 
+    @JsonIgnore
     private String password;
 
     @Enumerated(EnumType.STRING)
@@ -42,10 +43,11 @@ public class User implements UserDetails {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id")
     )
+    @JsonIgnore
     private Set<Product> wishlist = new HashSet<>();
 
     public String getFullname(){
-        return lastName + " " + firstName;
+        return firstName + " " + lastName;
     }
 
     @Override
@@ -69,6 +71,7 @@ public class User implements UserDetails {
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonLocked() {
         return isNonLocked;
     }
@@ -79,6 +82,7 @@ public class User implements UserDetails {
     }
 
     @Override
+    @JsonIgnore
     public boolean isEnabled() {
         return isEnable;
     }

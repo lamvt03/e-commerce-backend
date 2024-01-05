@@ -1,4 +1,4 @@
-package com.ecommerce.blog.model;
+package com.ecommerce.blog;
 
 import java.time.LocalDateTime;
 

@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -78,17 +79,10 @@ public class UserService {
         user.setEnable(false);
         userMapper.toDto(userRepository.save(user));
     }
-    public String lockUserWithId(Long id){
-        User u = findUserById(id);
-        u.setNonLocked(false);
+    public void activateOrDeactivateUser(Long userId){
+        User u = findUserById(userId);
+        u.setEnable(!u.isEnabled());
         userRepository.save(u);
-        return "The user with id [%s] was locked".formatted(id);
-    }
-    public String unlockUserWithId(Long id){
-        User u = findUserById(id);
-        u.setNonLocked(true);
-        userRepository.save(u);
-        return "The user with id [%s] was unlocked".formatted(id);
     }
 
     public UserDTO changePassword(User authenticatedUser, UserPasswordChange userPasswordChange) {
@@ -140,4 +134,10 @@ public class UserService {
                 .collect(Collectors.toSet());
     }
 
+    public List<User> getActivateUserList(){
+        return userRepository.findByIsEnableTrue();
+    }
+    public List<User> getDeactivateUserList(){
+        return userRepository.findByIsEnableFalse();
+    }
 }
