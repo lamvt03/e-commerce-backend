@@ -9,6 +9,7 @@ public record PCategoryDTO(
         @NotBlank(message = "name is mandatory")
         String name,
         String code,
+        String link,
         LocalDateTime createdAt,
         String createdBy,
         LocalDateTime lastModifiedAt,

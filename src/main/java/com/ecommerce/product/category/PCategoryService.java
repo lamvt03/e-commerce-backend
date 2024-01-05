@@ -48,7 +48,7 @@ public class PCategoryService {
     }
 
     public List<PCategoryDTO> getAllProductCategories(){
-        return pCategoryRepository.findAll().stream()
+        return pCategoryRepository.findAllByOrderByCreatedAtDesc().stream()
                 .map(pCategoryMapper::toDto)
                 .toList();
     }

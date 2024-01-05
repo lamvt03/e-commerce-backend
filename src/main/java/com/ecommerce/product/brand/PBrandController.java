@@ -10,7 +10,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/product/brand")
+@RequestMapping("/api/brand")
 public class PBrandController {
 
     private final PBrandService pBrandService;

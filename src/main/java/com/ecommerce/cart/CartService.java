@@ -28,8 +28,6 @@ public class CartService {
 
     private final ProductService productService;
 
-    private final PaginationService paginationService;
-
     private final CouponService couponService;
 
     public CartDTO addCart(Long userId, CartProductRequest request) {
@@ -58,24 +56,22 @@ public class CartService {
 
         cart.setTotal(total);
         cart.setTotalAfterDiscount(total);
-        return cartMapper.toDto(
-                cart, paginationService.getDefaultPaginationDTO()
-        );
+
+        return cartMapper.toDto(cart);
     }
 
     public CartDTO getCart(Long userId, PaginationDTO paginationDTO) {
         Cart cart = cartRepository.findByUser_Id(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart with user id [%s] not found".formatted(userId)));
-        return cartMapper.toDto(
-                cart, paginationDTO
-        );
+
+        return cartMapper.toDto(cart);
     }
 
     public CartDTO deleteCartProduct(Long userId, Long productId) {
         Cart cart = cartRepository.findByUser_Id(userId)
                 .orElseThrow(EntityNotFoundException::new);
         cProductRepository.deleteById(productId);
-        return cartMapper.toDto(cart, paginationService.getDefaultPaginationDTO());
+        return cartMapper.toDto(cart);
     }
 
     public CartDTO applyCoupon(Long userId, CouponApplyRequest request) {
@@ -87,8 +83,7 @@ public class CartService {
         cart.setTotalAfterDiscount(totalAfterDiscount);
         cart.setCouponId(coupon.getId());
         return cartMapper.toDto(
-                cartRepository.save(cart),
-                paginationService.getDefaultPaginationDTO()
+                cartRepository.save(cart)
         );
     }
 }

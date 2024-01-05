@@ -68,8 +68,9 @@ public class ProductService {
         productRepository.save(p);
     }
 
-    public List<ProductDTO> findAllProducts(){
-        return productRepository.findAllByOrderByCreatedAtDesc().stream()
+    public List<ProductDTO> findProducts(PaginationDTO paginationDTO){
+        Pageable pageable = paginationService.getPageable(paginationDTO);
+        return productRepository.findAll(pageable).stream()
                 .map(productMapper::toDto)
                 .toList();
     }
@@ -157,5 +158,19 @@ public class ProductService {
                         );
         pImageRepository.delete(pImage);
         imageService.deleteProductImage(publicId);
+    }
+
+    public List<ProductDTO> findProductByCategory(String code, PaginationDTO paginationDTO) {
+        Pageable pageable = paginationService.getPageable(paginationDTO);
+        return productRepository.findByCategory_Code(code, pageable).stream()
+                .map(productMapper::toDto)
+                .toList();
+    }
+
+    public List<ProductDTO> findProductByBrand(String code, PaginationDTO paginationDTO) {
+        Pageable pageable = paginationService.getPageable(paginationDTO);
+        return productRepository.findByBrand_Code(code, pageable).stream()
+                .map(productMapper::toDto)
+                .toList();
     }
 }

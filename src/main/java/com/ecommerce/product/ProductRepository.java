@@ -20,6 +20,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "AND (:#{#filter.maxPrice} IS NULL OR p.price <= :#{#filter.maxPrice}) ")
     List<Product> findWithFilter(@Param("filter") FilterDTO filter, Pageable pageable);
 
-    List<Product> findAllByOrderByCreatedAtDesc();
+    List<Product> findByCategory_Code(String code, Pageable pageable);
 
+    List<Product> findByBrand_Code(String code, Pageable pageable);
 }

@@ -8,8 +8,8 @@ public record PBrandDTO(
         Long id,
         @NotBlank(message = "name is mandatory")
         String name,
-
         String code,
+        String link,
         LocalDateTime createdAt,
         String createdBy,
         LocalDateTime lastModifiedAt,

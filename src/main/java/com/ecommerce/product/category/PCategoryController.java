@@ -9,7 +9,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/product/category")
+@RequestMapping("/api/category")
 public class PCategoryController {
 
     private final PCategoryService pCategoryService;

@@ -23,10 +23,12 @@ public class PaginationService {
         );
         return PageRequest.of(page - 1, limit, sort);
     }
-    public PaginationDTO getDefaultPaginationDTO(){
-        return new PaginationDTO(
-                1, 10, "desc", "createdAt"
+    public Pageable getDefaultPageable(){
+        Sort sort = Sort.by(
+                Sort.Direction.fromString("desc"),
+                "createdAt"
         );
+        return PageRequest.of(0, 10, sort);
     }
 
 }

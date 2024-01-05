@@ -75,11 +75,44 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<ProductDTO>> getAllProducts (){
-        List<ProductDTO> productDTOS = productService.findAllProducts();
+    @GetMapping
+    public ResponseEntity<List<ProductDTO>> getProducts (
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int limit,
+            @RequestParam(defaultValue = "desc", name = "sort") String sortDirection,
+            @RequestParam(defaultValue = "createdAt") String sortBy
+    ){
+        PaginationDTO paginationDTO = new PaginationDTO(page, limit, sortDirection, sortBy);
+        List<ProductDTO> productDTOS = productService.findProducts(paginationDTO);
         return ResponseEntity.ok(productDTOS);
     }
+
+    @GetMapping("/category/{code}")
+    public ResponseEntity<List<ProductDTO>> getProductsByCategory(
+            @PathVariable String code,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int limit,
+            @RequestParam(defaultValue = "desc", name = "sort") String sortDirection,
+            @RequestParam(defaultValue = "createdAt") String sortBy
+    ){
+        PaginationDTO paginationDTO = new PaginationDTO(page, limit, sortDirection, sortBy);
+        List<ProductDTO> productDTOS = productService.findProductByCategory(code, paginationDTO);
+        return ResponseEntity.ok(productDTOS);
+    }
+
+    @GetMapping("/brand/{code}")
+    public ResponseEntity<List<ProductDTO>> getProductsByBrand(
+            @PathVariable String code,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int limit,
+            @RequestParam(defaultValue = "desc", name = "sort") String sortDirection,
+            @RequestParam(defaultValue = "createdAt") String sortBy
+    ){
+        PaginationDTO paginationDTO = new PaginationDTO(page, limit, sortDirection, sortBy);
+        List<ProductDTO> productDTOS = productService.findProductByBrand(code, paginationDTO);
+        return ResponseEntity.ok(productDTOS);
+    }
+
 
     @PutMapping("wishlist")
     public ResponseEntity<?> addToWishList(

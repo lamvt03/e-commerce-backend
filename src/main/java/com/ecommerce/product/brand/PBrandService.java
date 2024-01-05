@@ -46,7 +46,7 @@ public class PBrandService {
     }
 
     public List<PBrandDTO> getAllProductBrands() {
-        return pBrandRepository.findAll().stream()
+        return pBrandRepository.findAllByOrderByCreatedAtDesc().stream()
                 .map(pBrandMapper::toDto)
                 .toList();
     }

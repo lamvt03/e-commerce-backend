@@ -19,6 +19,7 @@ public class PCategoryMapper {
                 entity.getId(),
                 entity.getName(),
                 entity.getCode(),
+                "/" + entity.getCode(),
                 entity.getCreatedAt(),
                 entity.getCreatedBy(),
                 entity.getLastModifiedAt(),

@@ -23,7 +23,7 @@ public class CartMapper {
 
     private final PaginationService paginationService;
 
-    public CartDTO toDto(Cart entity, PaginationDTO paginationDTO){
+    public CartDTO toDto(Cart entity){
         AtomicReference<String> couponCodeRf = new AtomicReference<>("");
         AtomicReference<String> couponNameRf = new AtomicReference<>("");
         if(entity.getCouponId() != null){
@@ -33,7 +33,7 @@ public class CartMapper {
                         couponNameRf.set(c.getName());
                     });
         }
-        Pageable pageable = paginationService.getPageable(paginationDTO);
+        Pageable pageable = paginationService.getDefaultPageable();
         return new CartDTO(
                 cProductRepository.findAllByCart_Id(entity.getId(), pageable).stream()
                         .map(cProductMapper::toDto)
