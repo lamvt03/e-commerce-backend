@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 public record ProductDTO(
-        Long encodeId,
+        Long id,
         String title,
         String slug,
         String description,

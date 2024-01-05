@@ -1,5 +1,8 @@
 package com.ecommerce.user.controller;
 
+import com.ecommerce.product.ProductService;
+import com.ecommerce.product.model.Product;
+import com.ecommerce.product.model.ProductDTO;
 import com.ecommerce.user.model.User;
 import com.ecommerce.user.model.UserDTO;
 import com.ecommerce.user.model.request.UserRegistration;
@@ -19,6 +22,7 @@ import java.util.List;
 public class AdminController {
 
     private final UserService userService;
+    private final ProductService productService;
 
     @PostMapping
     public ResponseEntity<User> createAdmin (
@@ -91,5 +95,28 @@ public class AdminController {
         PaginationDTO paginationDTO = new PaginationDTO(page, limit, sortDirection, sortBy);
         List<User> users = userService.searchUsers(keyword, paginationDTO);
         return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/deleted-products")
+    public ResponseEntity<List<ProductDTO>> getDeletedProducts(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int limit,
+            @RequestParam(defaultValue = "desc", name = "sort") String sortDirection,
+            @RequestParam(defaultValue = "createdAt") String sortBy
+    ){
+        PaginationDTO paginationDTO = new PaginationDTO(page, limit, sortDirection, sortBy);
+        List<ProductDTO> products = productService.getDeletedProducts(paginationDTO);
+        return ResponseEntity.ok(products);
+    }
+    @GetMapping("/products")
+    public ResponseEntity<List<ProductDTO>> getPublicProducts(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int limit,
+            @RequestParam(defaultValue = "desc", name = "sort") String sortDirection,
+            @RequestParam(defaultValue = "createdAt") String sortBy
+    ){
+        PaginationDTO paginationDTO = new PaginationDTO(page, limit, sortDirection, sortBy);
+        List<ProductDTO> products = productService.getPublicProducts(paginationDTO);
+        return ResponseEntity.ok(products);
     }
 }

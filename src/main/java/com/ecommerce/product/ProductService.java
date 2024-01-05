@@ -173,4 +173,28 @@ public class ProductService {
                 .map(productMapper::toDto)
                 .toList();
     }
+
+    public List<ProductDTO> getDeletedProducts(PaginationDTO paginationDTO) {
+        Pageable pageable = paginationService.getPageable(paginationDTO);
+        List<Product> products = productRepository.findByIsDeleted(true, pageable);
+        return products.stream()
+                .map(productMapper::toDto)
+                .toList();
+    }
+
+    public List<ProductDTO> getPublicProducts(PaginationDTO paginationDTO) {
+        Pageable pageable = paginationService.getPageable(paginationDTO);
+        List<Product> products = productRepository.findByIsDeleted(false, pageable);
+        return products.stream()
+                .map(productMapper::toDto)
+                .toList();
+    }
+
+    public ProductDTO restoreProductById(Long id) {
+        Product product = findProductById(id);
+        product.setDeleted(false);
+        return productMapper.toDto(
+                productRepository.save(product)
+        );
+    }
 }

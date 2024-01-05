@@ -23,4 +23,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByCategory_Code(String code, Pageable pageable);
 
     List<Product> findByBrand_Code(String code, Pageable pageable);
+
+    List<Product> findByIsDeleted(boolean isDeleted, Pageable pageable);
 }

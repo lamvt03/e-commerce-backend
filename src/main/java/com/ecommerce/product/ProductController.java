@@ -58,6 +58,12 @@ public class ProductController {
         return ResponseEntity.ok(productDTO);
     }
 
+    @PutMapping("/restore/{id}")
+    public ResponseEntity<ProductDTO> restoreProductById(@PathVariable Long id){
+        ProductDTO productDTO = productService.restoreProductById(id);
+        return ResponseEntity.ok(productDTO);
+    }
+
     @GetMapping("filter")
     public ResponseEntity<?> getFilteredProducts(
             @RequestParam(required = false) String brand,
