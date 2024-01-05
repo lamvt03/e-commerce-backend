@@ -4,15 +4,19 @@ import com.ecommerce.product.model.Product;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Setter
 @Getter
 @NoArgsConstructor
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "user")
 public class User implements UserDetails {
     @Id
@@ -37,6 +41,9 @@ public class User implements UserDetails {
     private boolean isEnable = true;
     private boolean isNonLocked = true;
 
+    @CreatedDate
+    private LocalDateTime createdAt;
+
     @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(
             name = "user_wishlist",
@@ -51,6 +58,7 @@ public class User implements UserDetails {
     }
 
     @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(role);
     }

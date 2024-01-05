@@ -3,6 +3,7 @@ package com.ecommerce.user.service;
 import com.ecommerce.product.ProductMapper;
 import com.ecommerce.user.model.User;
 import com.ecommerce.user.model.UserDTO;
+import com.ecommerce.user.model.UserRole;
 import com.ecommerce.user.model.request.UserRegistration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,10 +31,12 @@ public class UserMapper {
                         .collect(Collectors.toSet())
         );
     }
-    public User toEntity(UserRegistration dto){
+    public User toEntity(UserRegistration dto, boolean isUser){
+        UserRole role = isUser ? UserRole.USER : UserRole.ADMIN;
         User entity = new User();
         entity.setEmail(dto.email());
         entity.setPassword(passwordEncoder.encode(dto.password()));
+        entity.setRole(role);
         entity.setFirstName(dto.firstName());
         entity.setLastName(dto.lastName());
         entity.setMobile(dto.mobile());

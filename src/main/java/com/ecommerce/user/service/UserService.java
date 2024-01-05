@@ -13,8 +13,11 @@ import com.ecommerce.user.model.request.*;
 import com.ecommerce.user.otp.Otp;
 import com.ecommerce.user.otp.OtpRepository;
 import com.ecommerce.util.MailService;
+import com.ecommerce.util.PaginationService;
 import com.ecommerce.util.RandomService;
+import com.ecommerce.util.model.PaginationDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -35,16 +38,21 @@ public class UserService {
     private final UserMapper userMapper;
 
     private final MailService mailService;
+
     private final PasswordEncoder passwordEncoder;
+
     private final ProductMapper productMapper;
+
     private final CartRepository cartRepository;
     private final RandomService randomService;
     private final OtpRepository otpRepository;
 
+    private final PaginationService paginationService;
+
     public UserDTO registerUser(UserRegistration userRegistration){
         if(!userRepository.existsByEmail(userRegistration.email())){
             User user = userRepository.save(
-                    userMapper.toEntity(userRegistration)
+                    userMapper.toEntity(userRegistration, true)
             );
             cartRepository.save(
                     Cart.builder()
@@ -80,7 +88,9 @@ public class UserService {
         userMapper.toDto(userRepository.save(user));
     }
     public void activateOrDeactivateUser(Long userId){
-        User u = findUserById(userId);
+        User u = userRepository.findByIdAndRole(userId, UserRole.USER)
+                .orElseThrow(() -> new ResourceNotFoundException("User with id [%s] not found".formatted(userId)));
+
         u.setEnable(!u.isEnabled());
         userRepository.save(u);
     }
@@ -134,10 +144,30 @@ public class UserService {
                 .collect(Collectors.toSet());
     }
 
-    public List<User> getActivateUserList(){
-        return userRepository.findByIsEnableTrue();
+    public List<User> getActivateUserList(PaginationDTO paginationDTO){
+        Pageable pageable = paginationService.getPageable(paginationDTO);
+        return userRepository.findByRoleAndIsEnable(UserRole.USER, true, pageable);
     }
-    public List<User> getDeactivateUserList(){
-        return userRepository.findByIsEnableFalse();
+    public List<User> getDeactivateUserList(PaginationDTO paginationDTO){
+        Pageable pageable = paginationService.getPageable(paginationDTO);
+        return userRepository.findByRoleAndIsEnable(UserRole.USER, false, pageable);
+    }
+
+    public List<User> getAdmins(PaginationDTO paginationDTO) {
+        Pageable pageable = paginationService.getPageable(paginationDTO);
+        return userRepository.findByRole(UserRole.ADMIN, pageable);
+    }
+
+    public User createAdmin(UserRegistration request) {
+        User admin = userMapper.toEntity(request, false);
+        return userRepository.save(admin);
+    }
+
+    public void activateOrDeactivateAdmin(Long userId) {
+        User admin = userRepository.findByIdAndRole(userId, UserRole.ADMIN)
+                .orElseThrow(() -> new ResourceNotFoundException("Admin with id [%s] not found".formatted(userId)));
+
+        admin.setEnable(!admin.isEnabled());
+        userRepository.save(admin);
     }
 }
