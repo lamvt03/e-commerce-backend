@@ -18,7 +18,9 @@ public class PersistenceConfig {
     AuditorAware<String> getCurrentAuditor(){
         return () -> {
             Authentication loggedUser = SecurityContextHolder.getContext().getAuthentication();
-            return Optional.of(loggedUser.getName());
+            if(loggedUser != null)
+                return Optional.of(loggedUser.getName());
+            return Optional.of("");
         };
     }
 }

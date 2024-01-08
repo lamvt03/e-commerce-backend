@@ -1,8 +1,13 @@
 package com.ecommerce.enquiry;
 
 import com.ecommerce.exception.ResourceNotFoundException;
+import com.ecommerce.util.PaginationService;
+import com.ecommerce.util.model.PaginationDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -10,6 +15,8 @@ public class EnquiryService {
 
     private final EnquiryRepository enquiryRepository;
     private final EnquiryMapper enquiryMapper;
+
+    private final PaginationService paginationService;
 
     public EnquiryDTO createEnquiry(EnquiryDTO enquiryDTO) {
         Enquiry enquiry = enquiryMapper.toEntity(enquiryDTO);
@@ -43,5 +50,12 @@ public class EnquiryService {
     public EnquiryDTO getEnquiry(Long id) {
         Enquiry enquiry = findEnquiryById(id);
         return enquiryMapper.toDto(enquiry);
+    }
+
+    public List<EnquiryDTO> findEnquiries(PaginationDTO paginationDTO) {
+        Pageable pageable = paginationService.getPageable(paginationDTO);
+        return enquiryRepository.findAll(pageable).stream()
+                .map(enquiryMapper::toDto)
+                .toList();
     }
 }

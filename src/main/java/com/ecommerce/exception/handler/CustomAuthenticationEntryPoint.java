@@ -28,6 +28,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
         Map<String, String> errMap = Map.of(
                 "code", String.valueOf(HttpStatus.UNAUTHORIZED.value()),
+                "status", HttpStatus.UNAUTHORIZED.getReasonPhrase(),
                 "msg", msg
         );
 

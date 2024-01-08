@@ -4,18 +4,20 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/brand")
+@RequestMapping("/api/product/brand")
 public class PBrandController {
 
     private final PBrandService pBrandService;
 
     @PostMapping
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<PBrandDTO> createProductBrand(
             @Valid @RequestBody PBrandDTO pBrandDTO
     ){
@@ -25,6 +27,7 @@ public class PBrandController {
         );
     }
     @PutMapping("{id}")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<PBrandDTO> updateProductBrand(
             @PathVariable Long id,
             @Valid @RequestBody PBrandDTO pBrandDTO
@@ -35,6 +38,7 @@ public class PBrandController {
     }
 
     @DeleteMapping("{id}")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<String> deleteProductBrand(
             @PathVariable Long id
     ){

@@ -4,6 +4,7 @@ import com.ecommerce.coupon.request.CouponCreateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +17,7 @@ public class CouponController {
     private final CouponService couponService;
 
     @PostMapping
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<CouponDTO> createCoupon(
             @RequestBody CouponCreateRequest request
     ){
@@ -34,6 +36,7 @@ public class CouponController {
     }
 
     @PutMapping("{id}")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<CouponDTO> updateCoupon(
             @PathVariable Long id,
             @RequestBody CouponCreateRequest request
@@ -43,6 +46,7 @@ public class CouponController {
     }
 
     @DeleteMapping("{id}")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<CouponDTO> deleteCoupon(
             @PathVariable Long id
     ){
@@ -53,6 +57,7 @@ public class CouponController {
     }
 
     @GetMapping("/all")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<List<CouponDTO>> getAllCoupons(){
         List<CouponDTO> couponDTOS = couponService.getAllCoupons();
         return ResponseEntity.ok(couponDTOS);

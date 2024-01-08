@@ -22,7 +22,8 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
         Map<String, String> errMap = Map.of(
                 "code", String.valueOf(HttpStatus.FORBIDDEN.value()),
-                "msg", "You have no permissions"
+                "status", HttpStatus.FORBIDDEN.getReasonPhrase(),
+                "msg", accessDeniedException.getMessage()
         );
 
         //return for client

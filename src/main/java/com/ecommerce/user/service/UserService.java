@@ -85,7 +85,7 @@ public class UserService {
     public void deleteUser(Long id){
         User user = findUserById(id);
         user.setEnable(false);
-        userMapper.toDto(userRepository.save(user));
+        userRepository.save(user);
     }
     public void activateOrDeactivateUser(Long userId){
         User u = userRepository.findByIdAndRole(userId, UserRole.USER)

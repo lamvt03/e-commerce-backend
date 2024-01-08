@@ -11,8 +11,8 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -29,20 +29,36 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception {
         http
                 .cors(Customizer.withDefaults())
-                .csrf(csrf -> csrf.disable())
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
-                        auth -> auth.requestMatchers(
-                                "/api/user/register",
+                        auth -> auth
+                                .requestMatchers(
                                         "/*/auth/**",
-                                "api/user/forgot-password",
-                                "api/user/reset-password"
-                                ).permitAll()
-                                .requestMatchers("api/user/role").hasRole("ADMIN")
-                                .requestMatchers("api/admin/**").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.POST,"api/product").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.PUT,"api/product").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.DELETE,"api/product").hasRole("ADMIN")
-                                .anyRequest().authenticated()
+                                        "/api/user/password/forgot",
+                                        "/api/user/password/reset",
+
+                                        "/v2/api-docs",
+                                        "/v3/api-docs",
+                                        "/v3/api-docs/**",
+                                        "/swagger-resources",
+                                        "/swagger-resources/**",
+                                        "/configuration/ui",
+                                        "/configuration/security",
+                                        "/swagger-ui/**",
+                                        "/webjars/**",
+                                        "/swagger-ui.html"
+                                    ).permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/product/**")
+                                    .permitAll()
+                                .requestMatchers(
+                                        "/api/cart/**",
+                                        "/api/order/**"
+                                    ).hasRole("USER")
+                                .requestMatchers(
+                                        "/api/admin/**"
+                                    ).hasRole("ADMIN")
+                                .anyRequest()
+                                    .authenticated()
                 )
                 .sessionManagement(
                         sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)

@@ -1,16 +1,14 @@
 package com.ecommerce.product;
 
 import com.ecommerce.product.model.ProductDTO;
-import com.ecommerce.product.model.request.AddWishlistRequest;
 import com.ecommerce.product.model.request.ProductCreateRequest;
+import com.ecommerce.user.model.UserDTO;
 import com.ecommerce.util.model.FilterDTO;
 import com.ecommerce.util.model.PaginationDTO;
-import com.ecommerce.product.model.request.RatingRequest;
-import com.ecommerce.user.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,6 +22,7 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<ProductDTO> createProduct(
             @RequestBody ProductCreateRequest request
     ){
@@ -42,6 +41,7 @@ public class ProductController {
     }
 
     @DeleteMapping("{id}")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<?> deleteProductById(
             @PathVariable Long id
     ){
@@ -51,6 +51,7 @@ public class ProductController {
                 .build();
     }
     @PutMapping("{id}")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<ProductDTO> updateProductById(
             @PathVariable Long id,
             @RequestBody ProductCreateRequest request){
@@ -59,12 +60,13 @@ public class ProductController {
     }
 
     @PutMapping("/restore/{id}")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<ProductDTO> restoreProductById(@PathVariable Long id){
         ProductDTO productDTO = productService.restoreProductById(id);
         return ResponseEntity.ok(productDTO);
     }
 
-    @GetMapping("filter")
+    @GetMapping("/filter")
     public ResponseEntity<?> getFilteredProducts(
             @RequestParam(required = false) String brand,
             @RequestParam(required = false) String category,
@@ -93,9 +95,9 @@ public class ProductController {
         return ResponseEntity.ok(productDTOS);
     }
 
-    @GetMapping("/category/{code}")
+    @GetMapping("/category/{categoryCode}")
     public ResponseEntity<List<ProductDTO>> getProductsByCategory(
-            @PathVariable String code,
+            @PathVariable(name = "categoryCode") String code,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int limit,
             @RequestParam(defaultValue = "desc", name = "sort") String sortDirection,
@@ -106,9 +108,9 @@ public class ProductController {
         return ResponseEntity.ok(productDTOS);
     }
 
-    @GetMapping("/brand/{code}")
+    @GetMapping("/brand/{brandCode}")
     public ResponseEntity<List<ProductDTO>> getProductsByBrand(
-            @PathVariable String code,
+            @PathVariable(name = "brandCode") String code,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int limit,
             @RequestParam(defaultValue = "desc", name = "sort") String sortDirection,
@@ -132,39 +134,21 @@ public class ProductController {
         return ResponseEntity.ok(productDTOS);
     }
 
-    @PutMapping("wishlist")
-    public ResponseEntity<?> addToWishList(
-            @AuthenticationPrincipal User user,
-            @RequestBody AddWishlistRequest request
-    ){
-        return ResponseEntity.ok(
-                productService.addToWishlist(user.getId(),request)
-        );
-    }
 
-    @PostMapping("/rating")
-    public ResponseEntity<ProductDTO> ratingProduct(
-            @AuthenticationPrincipal User user,
-            @RequestBody RatingRequest request
-    ){
-        ProductDTO productDTO = productService.ratingProduct(user,request);
-        return ResponseEntity.ok(productDTO);
-    }
-
-    @PostMapping("upload/{id}")
+    @PostMapping("/{id}/uploadImage")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<ProductDTO> uploadImage(
             @RequestParam("image") MultipartFile[] images,
             @PathVariable Long id
             ){
         ProductDTO productDTO = productService.uploadProductImages(id, images);
-        return ResponseEntity.ok(
-                productDTO
-        );
+        return ResponseEntity.ok(productDTO);
     }
-    @DeleteMapping("/{prodId}/image/{publicId}")
+    @DeleteMapping("/{id}/image/{imageId}")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<?> deleteProductImage(
-            @PathVariable Long prodId,
-            @PathVariable String publicId
+            @PathVariable(name = "id") Long prodId,
+            @PathVariable(name = "imageId") String publicId
     ){
         productService.deleteProductImage(prodId, publicId);
         return new ResponseEntity<>(

@@ -1,6 +1,7 @@
 package com.ecommerce.cart;
 
 import com.ecommerce.cart.request.CartProductRequest;
+import com.ecommerce.cart.request.DeleteCProductRequest;
 import com.ecommerce.coupon.request.CouponApplyRequest;
 import com.ecommerce.user.model.User;
 import com.ecommerce.util.model.PaginationDTO;
@@ -36,13 +37,13 @@ public class CartController {
         return ResponseEntity.ok(cartDTO);
     }
 
-    @DeleteMapping("/product/{productId}")
+    @DeleteMapping("/product")
     public ResponseEntity<CartDTO> deleteCartProduct(
             @AuthenticationPrincipal User user,
-            @PathVariable Long productId
+            @RequestBody DeleteCProductRequest request
 
     ){
-        CartDTO cartDTO = cartService.deleteCartProduct(user.getId(), productId);
+        CartDTO cartDTO = cartService.deleteCartProduct(user.getId(), request);
         return ResponseEntity.ok(cartDTO);
     }
     @PostMapping("/apply")

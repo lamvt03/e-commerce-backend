@@ -4,6 +4,7 @@ import com.ecommerce.exception.DuplicateResourceException;
 import com.ibm.icu.impl.locale.XCldrStub;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
@@ -27,6 +28,15 @@ public class GlobalAdvice {
         );
     }
 
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    Map<String, Object> handleAccessDeniedException(AccessDeniedException ex){
+        return createErrorMap(
+                ex.getMessage(),
+                HttpStatus.FORBIDDEN.value(),
+                HttpStatus.FORBIDDEN.getReasonPhrase()
+        );
+    }
     @ExceptionHandler(BadCredentialsException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     Map<String, Object> handleBadCredentialsException(BadCredentialsException ex){

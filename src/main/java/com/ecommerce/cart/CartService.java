@@ -3,18 +3,21 @@ package com.ecommerce.cart;
 import com.ecommerce.cart.product.CProduct;
 import com.ecommerce.cart.product.CProductRepository;
 import com.ecommerce.cart.request.CartProductRequest;
+import com.ecommerce.cart.request.DeleteCProductRequest;
 import com.ecommerce.coupon.Coupon;
 import com.ecommerce.coupon.CouponService;
 import com.ecommerce.coupon.request.CouponApplyRequest;
 import com.ecommerce.exception.ResourceNotFoundException;
 import com.ecommerce.product.ProductService;
 import com.ecommerce.product.model.Product;
-import com.ecommerce.util.PaginationService;
 import com.ecommerce.util.model.PaginationDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 @Transactional
@@ -67,17 +70,38 @@ public class CartService {
         return cartMapper.toDto(cart);
     }
 
-    public CartDTO deleteCartProduct(Long userId, Long productId) {
+    public CartDTO deleteCartProduct(Long userId, DeleteCProductRequest request) {
         Cart cart = cartRepository.findByUser_Id(userId)
                 .orElseThrow(EntityNotFoundException::new);
-        cProductRepository.deleteById(productId);
-        return cartMapper.toDto(cart);
+
+        AtomicReference<Double> totalRf = new AtomicReference<>(cart.getTotal());
+        List<CProduct> productList = cProductRepository.findAllById(request.ids());
+        productList.forEach(p -> {
+            totalRf.updateAndGet(v -> v - p.getPrice() * p.getQuantity());
+        });
+        cProductRepository.deleteAll(productList);
+
+        cart.setTotal(totalRf.get());
+        cart.setTotalAfterDiscount(totalRf.get());
+
+        if(cart.getCouponId() != null){
+            Coupon coupon = couponService.findCouponById(cart.getId());
+            totalRf.updateAndGet(v -> v * (1 - coupon.getDiscount() / 100.0));
+            cart.setTotalAfterDiscount(totalRf.get());
+        }
+
+        return cartMapper.toDto(
+                cartRepository.save(cart)
+        );
     }
 
     public CartDTO applyCoupon(Long userId, CouponApplyRequest request) {
-        Coupon coupon = couponService.findCouponByCode(request.code());
         Cart cart = cartRepository.findByUser_Id(userId)
                 .orElseThrow();
+        if(cart.getCouponId() != null)
+            throw new RuntimeException("Your cart has been applied coupon already");
+
+        Coupon coupon = couponService.findCouponByCode(request.code());
         double totalAfterDiscount = cart.getTotal() * (1 - coupon.getDiscount() / 100.0);
 
         cart.setTotalAfterDiscount(totalAfterDiscount);

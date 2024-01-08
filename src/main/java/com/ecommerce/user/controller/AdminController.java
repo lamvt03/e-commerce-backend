@@ -53,14 +53,14 @@ public class AdminController {
         return ResponseEntity.ok(admins);
     }
 
-    @PutMapping("/lock-user/{userId}")
+    @PutMapping("/lockUser/{userId}")
     public ResponseEntity<?> activateOrDeactivateUser(@PathVariable Long userId){
         userService.activateOrDeactivateUser(userId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .build();
     }
 
-    @GetMapping("/activate-users")
+    @GetMapping("/activateUsers")
     public ResponseEntity<List<User>> getActivateUserList(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int limit,
@@ -72,7 +72,7 @@ public class AdminController {
         return ResponseEntity.ok(users);
     }
 
-    @GetMapping("/deactivate-users")
+    @GetMapping("/deactivateUsers")
     public ResponseEntity<List<User>> getDeactivateUserList(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int limit,
@@ -82,6 +82,12 @@ public class AdminController {
         PaginationDTO paginationDTO = new PaginationDTO(page, limit, sortDirection, sortBy);
         List<User> users = userService.getDeactivateUserList(paginationDTO);
         return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<UserDTO> getUser(@PathVariable Long userId){
+        UserDTO userDTO = userService.getUser(userId);
+        return ResponseEntity.ok(userDTO);
     }
 
     @GetMapping("/search")
@@ -97,7 +103,7 @@ public class AdminController {
         return ResponseEntity.ok(users);
     }
 
-    @GetMapping("/deleted-products")
+    @GetMapping("/deletedProducts")
     public ResponseEntity<List<ProductDTO>> getDeletedProducts(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int limit,
@@ -108,7 +114,7 @@ public class AdminController {
         List<ProductDTO> products = productService.getDeletedProducts(paginationDTO);
         return ResponseEntity.ok(products);
     }
-    @GetMapping("/products")
+    @GetMapping("/publicProducts")
     public ResponseEntity<List<ProductDTO>> getPublicProducts(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int limit,

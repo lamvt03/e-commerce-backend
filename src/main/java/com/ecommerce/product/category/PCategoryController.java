@@ -3,17 +3,19 @@ package com.ecommerce.product.category;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/category")
+@RequestMapping("/api/product/category")
 public class PCategoryController {
 
     private final PCategoryService pCategoryService;
     @PostMapping
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<PCategoryDTO> createProductCategory(
             @RequestBody PCategoryDTO pCategoryDTO
     ){
@@ -22,6 +24,7 @@ public class PCategoryController {
                 .body(pCategoryService.createCategory(pCategoryDTO));
     }
     @PutMapping("{id}")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<PCategoryDTO> updateProductCategory(
             @PathVariable Long id,
             @RequestBody PCategoryDTO pCategoryDTO
@@ -30,7 +33,8 @@ public class PCategoryController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<?> updateProductCategory(
+    @Secured("ROLE_ADMIN")
+    public ResponseEntity<?> deleteProductCategory(
             @PathVariable Long id
     ){
         pCategoryService.deleteProductCategory(id);

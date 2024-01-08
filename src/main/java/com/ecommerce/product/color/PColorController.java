@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +17,7 @@ public class PColorController {
     private final PColorService pColorService;
 
     @PostMapping
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<PColorDTO> createProductColor(
             @RequestBody PColorDTO pColorDTO
     ){
@@ -25,6 +27,7 @@ public class PColorController {
         );
     }
     @PutMapping("{id}")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<PColorDTO> updateProductColor(
             @PathVariable Long id,
             @RequestBody PColorDTO pColorDTO
@@ -35,6 +38,7 @@ public class PColorController {
     }
 
     @DeleteMapping("{id}")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<String> deleteProductColor(
             @PathVariable Long id
     ){
