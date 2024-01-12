@@ -1,9 +1,11 @@
 package com.ecommerce.cart;
 
+import com.ecommerce.cart.model.Cart;
+import com.ecommerce.cart.model.CartDTO;
 import com.ecommerce.cart.product.CProduct;
 import com.ecommerce.cart.product.CProductRepository;
-import com.ecommerce.cart.request.CartProductRequest;
-import com.ecommerce.cart.request.DeleteCProductRequest;
+import com.ecommerce.cart.request.CProductAddRequest;
+import com.ecommerce.cart.request.CProductDeleteRequest;
 import com.ecommerce.coupon.Coupon;
 import com.ecommerce.coupon.CouponService;
 import com.ecommerce.coupon.request.CouponApplyRequest;
@@ -33,7 +35,7 @@ public class CartService {
 
     private final CouponService couponService;
 
-    public CartDTO addCart(Long userId, CartProductRequest request) {
+    public CartDTO addCart(Long userId, CProductAddRequest request) {
         Cart cart = cartRepository.findByUser_Id(userId)
                 .orElseThrow(EntityNotFoundException::new);
 
@@ -70,7 +72,7 @@ public class CartService {
         return cartMapper.toDto(cart);
     }
 
-    public CartDTO deleteCartProduct(Long userId, DeleteCProductRequest request) {
+    public CartDTO deleteCartProduct(Long userId, CProductDeleteRequest request) {
         Cart cart = cartRepository.findByUser_Id(userId)
                 .orElseThrow(EntityNotFoundException::new);
 

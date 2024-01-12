@@ -1,16 +1,8 @@
-package com.ecommerce.cart;
+package com.ecommerce.cart.model;
 
-import com.ecommerce.cart.product.CProduct;
-import com.ecommerce.common.AbstractEntity;
 import com.ecommerce.user.model.User;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @Builder
 @Setter @Getter

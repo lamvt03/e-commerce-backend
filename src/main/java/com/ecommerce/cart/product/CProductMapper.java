@@ -24,6 +24,7 @@ public class CProductMapper {
                 entity.getId(),
                 product.getId(),
                 product.getTitle(),
+                product.getDescription(),
                 pColorRepository.findById(entity.getColorId())
                                 .orElseThrow()
                                 .getName(),

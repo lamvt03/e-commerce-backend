@@ -1,7 +1,7 @@
 package com.ecommerce.product.color;
 
 import com.ecommerce.exception.ResourceNotFoundException;
-import com.ecommerce.product.model.Product;
+import com.ecommerce.product.color.request.PColorCreateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +14,8 @@ public class PColorService {
     private final PColorRepository pColorRepository;
     private final PColorMapper pColorMapper;
 
-    public PColorDTO createColor(PColorDTO pColorDTO) {
-        PColor pColor = pColorMapper.toEntity(pColorDTO);
+    public PColorDTO createColor(PColorCreateRequest request) {
+        PColor pColor = pColorMapper.toEntity(request);
         return pColorMapper.toDto(
                 pColorRepository.save(pColor)
         );
@@ -27,10 +27,10 @@ public class PColorService {
                 );
     }
 
-    public PColorDTO updateProductColor(Long id, PColorDTO pColorDTO) {
+    public PColorDTO updateProductColor(Long id, PColorCreateRequest request) {
         PColor pColor = findPColorById(id);
         return pColorMapper.toDto(
-                pColorRepository.save(pColorMapper.toEntity(pColor, pColorDTO))
+                pColorRepository.save(pColorMapper.toEntity(pColor, request))
         );
     }
 
@@ -45,7 +45,7 @@ public class PColorService {
     }
 
     public List<PColorDTO> getAllProductCategories(){
-        return pColorRepository.findAll().stream()
+        return pColorRepository.findAllByOrderByCreatedAtDesc().stream()
                 .map(pColorMapper::toDto)
                 .toList();
     }

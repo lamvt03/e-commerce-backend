@@ -1,8 +1,7 @@
 package com.ecommerce.product;
 
-import com.ecommerce.user.model.User;
-import com.ecommerce.util.model.FilterDTO;
 import com.ecommerce.product.model.Product;
+import com.ecommerce.util.model.FilterDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

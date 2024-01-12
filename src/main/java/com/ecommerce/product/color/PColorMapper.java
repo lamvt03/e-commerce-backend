@@ -1,7 +1,6 @@
 package com.ecommerce.product.color;
 
-import com.ecommerce.product.brand.PBrand;
-import com.ecommerce.product.brand.PBrandDTO;
+import com.ecommerce.product.color.request.PColorCreateRequest;
 import com.github.slugify.Slugify;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,16 +22,16 @@ public class PColorMapper {
                 entity.getLastModifiedBy()
         );
     }
-    public PColor toEntity(PColorDTO dto){
+    public PColor toEntity(PColorCreateRequest request){
         PColor entity = new PColor();
-        entity.setName(dto.name());
-        entity.setCode(slugify.slugify(dto.name()));
+        entity.setName(request.name());
+        entity.setCode(slugify.slugify(request.name()));
         return entity;
     }
 
-    public PColor toEntity(PColor entity, PColorDTO dto){
-        entity.setName(dto.name());
-        entity.setCode(slugify.slugify(dto.name()));
+    public PColor toEntity(PColor entity, PColorCreateRequest request){
+        entity.setName(request.name());
+        entity.setCode(slugify.slugify(request.name()));
         return entity;
     }
 }

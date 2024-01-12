@@ -1,6 +1,6 @@
 package com.ecommerce.order;
 
-import com.ecommerce.cart.Cart;
+import com.ecommerce.cart.model.Cart;
 import com.ecommerce.cart.CartRepository;
 import com.ecommerce.cart.product.CProduct;
 import com.ecommerce.cart.product.CProductRepository;
@@ -14,7 +14,6 @@ import com.ecommerce.order.product.OProductMapper;
 import com.ecommerce.order.product.OProductRepository;
 import com.ecommerce.order.request.OrderCreateRequest;
 import com.ecommerce.product.ProductRepository;
-import com.ecommerce.product.ProductService;
 import com.ecommerce.product.model.Product;
 import com.ecommerce.util.PaginationService;
 import com.ecommerce.util.model.PaginationDTO;

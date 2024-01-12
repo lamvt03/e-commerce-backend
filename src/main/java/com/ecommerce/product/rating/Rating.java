@@ -3,7 +3,6 @@ package com.ecommerce.product.rating;
 import com.ecommerce.common.AbstractEntity;
 import com.ecommerce.product.model.Product;
 import com.ecommerce.user.model.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,15 +1,20 @@
 package com.ecommerce.user.service;
 
-import com.ecommerce.cart.*;
-import com.ecommerce.coupon.CouponRepository;
+import com.ecommerce.cart.CartRepository;
+import com.ecommerce.cart.model.Cart;
 import com.ecommerce.exception.DuplicateResourceException;
 import com.ecommerce.exception.ResourceNotFoundException;
-import com.ecommerce.order.*;
 import com.ecommerce.product.ProductMapper;
 import com.ecommerce.product.model.ProductDTO;
 import com.ecommerce.user.UserRepository;
-import com.ecommerce.user.model.*;
-import com.ecommerce.user.model.request.*;
+import com.ecommerce.user.model.User;
+import com.ecommerce.user.model.UserDTO;
+import com.ecommerce.user.model.UserRole;
+import com.ecommerce.user.model.request.UserPasswordChange;
+import com.ecommerce.user.model.request.UserPasswordForgot;
+import com.ecommerce.user.model.request.UserPasswordReset;
+import com.ecommerce.user.model.request.UserRegistration;
+import com.ecommerce.user.model.resp.UserRegistrationResp;
 import com.ecommerce.user.otp.Otp;
 import com.ecommerce.user.otp.OtpRepository;
 import com.ecommerce.util.MailService;
@@ -49,7 +54,7 @@ public class UserService {
 
     private final PaginationService paginationService;
 
-    public UserDTO registerUser(UserRegistration userRegistration){
+    public UserRegistrationResp registerUser(UserRegistration userRegistration){
         if(!userRepository.existsByEmail(userRegistration.email())){
             User user = userRepository.save(
                     userMapper.toEntity(userRegistration, true)
@@ -59,7 +64,7 @@ public class UserService {
                     .user(user)
                     .build()
             );
-            return userMapper.toDto(user);
+            return userMapper.toRegistrationResponse(user);
         }else
             throw new DuplicateResourceException("The user with email [%s] already exists".formatted(userRegistration.email()));
     }
@@ -81,6 +86,9 @@ public class UserService {
     public UserDTO getUser(Long id){
         User user = findUserById(id);
         return userMapper.toDto(user);
+    }
+    public User searchUser(Long id){
+        return findUserById(id);
     }
     public void deleteUser(Long id){
         User user = findUserById(id);
@@ -131,7 +139,7 @@ public class UserService {
         Otp otp = otpRepository.findByUser_Id(user.getId())
                 .filter(o -> o.getExpiredAt().isAfter(LocalDateTime.now()))
                 .filter(o -> o.getCode().equals(userPasswordReset.otpCode()))
-                .orElseThrow(() -> new RuntimeException("Invalid reset password token"));
+                .orElseThrow(() -> new RuntimeException("Invalid otp code"));
         user.setPassword(passwordEncoder.encode(userPasswordReset.newPassword()));
         userRepository.save(user);
         otpRepository.delete(otp);
@@ -163,16 +171,16 @@ public class UserService {
         return userRepository.save(admin);
     }
 
-    public void activateOrDeactivateAdmin(Long userId) {
-        User admin = userRepository.findByIdAndRole(userId, UserRole.ADMIN)
-                .orElseThrow(() -> new ResourceNotFoundException("Admin with id [%s] not found".formatted(userId)));
-
-        admin.setEnable(!admin.isEnabled());
-        userRepository.save(admin);
-    }
-
     public List<User> searchUsers(String keyword, PaginationDTO paginationDTO) {
         Pageable pageable = paginationService.getPageable(paginationDTO);
         return userRepository.findWithKeyword(keyword, pageable);
+    }
+
+    public UserDTO restoreUserById(Long id) {
+        User user = findUserById(id);
+        user.setEnable(true);
+        return userMapper.toDto(
+                userRepository.save(user)
+        );
     }
 }

@@ -1,5 +1,6 @@
 package com.ecommerce.enquiry;
 
+import com.ecommerce.enquiry.request.EnquiryCreateRequest;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -7,19 +8,20 @@ public class EnquiryMapper {
 
     public EnquiryDTO toDto(Enquiry entity){
         return new EnquiryDTO(
+                entity.getId(),
                 entity.getName(),
                 entity.getEmail(),
                 entity.getMobile(),
                 entity.getComment(),
-                entity.getLastModifiedAt()
+                entity.getCreatedAt()
         );
     }
-    public Enquiry toEntity(EnquiryDTO dto){
+    public Enquiry toEntity(EnquiryCreateRequest request){
         return new Enquiry(
-                dto.name(),
-                dto.email(),
-                dto.mobile(),
-                dto.comment()
+                request.name(),
+                request.email(),
+                request.mobile(),
+                request.comment()
         );
     }
 }

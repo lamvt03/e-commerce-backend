@@ -1,10 +1,7 @@
 package com.ecommerce.product.category;
 
 import com.ecommerce.exception.ResourceNotFoundException;
-import com.ecommerce.product.category.PCategory;
-import com.ecommerce.product.category.PCategoryDTO;
-import com.ecommerce.product.category.PCategoryMapper;
-import com.ecommerce.product.category.PCategoryRepository;
+import com.ecommerce.product.category.request.PCategoryCreateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +14,8 @@ public class PCategoryService {
     private final PCategoryRepository pCategoryRepository;
     private final PCategoryMapper pCategoryMapper;
 
-    public PCategoryDTO createCategory(PCategoryDTO pCategoryDTO) {
-        PCategory pCategory = pCategoryMapper.toEntity(pCategoryDTO);
+    public PCategoryDTO createCategory(PCategoryCreateRequest request) {
+        PCategory pCategory = pCategoryMapper.toEntity(request);
         return pCategoryMapper.toDto(
                 pCategoryRepository.save(pCategory)
         );
@@ -30,10 +27,10 @@ public class PCategoryService {
                 );
     }
 
-    public PCategoryDTO updateProductCategory(Long id, PCategoryDTO pCategoryDTO) {
+    public PCategoryDTO updateProductCategory(Long id, PCategoryCreateRequest request) {
         PCategory pCategory = findPCategoryById(id);
         return pCategoryMapper.toDto(
-                pCategoryRepository.save(pCategoryMapper.toEntity(pCategory, pCategoryDTO))
+                pCategoryRepository.save(pCategoryMapper.toEntity(pCategory, request))
         );
     }
 

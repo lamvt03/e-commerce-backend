@@ -1,9 +1,6 @@
 package com.ecommerce.product.category;
 
-import com.ecommerce.product.brand.PBrand;
-import com.ecommerce.product.brand.PBrandDTO;
-import com.ecommerce.product.category.PCategory;
-import com.ecommerce.product.category.PCategoryDTO;
+import com.ecommerce.product.category.request.PCategoryCreateRequest;
 import com.github.slugify.Slugify;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,16 +23,16 @@ public class PCategoryMapper {
                 entity.getLastModifiedBy()
         );
     }
-    public PCategory toEntity(PCategoryDTO dto){
+    public PCategory toEntity(PCategoryCreateRequest request){
         PCategory entity = new PCategory();
-        entity.setName(dto.name());
-        entity.setCode(slugify.slugify(dto.name()));
+        entity.setName(request.name());
+        entity.setCode(slugify.slugify(request.name()));
         return entity;
     }
 
-    public PCategory toEntity(PCategory entity, PCategoryDTO dto){
-        entity.setName(dto.name());
-        entity.setCode(slugify.slugify(dto.name()));
+    public PCategory toEntity(PCategory entity, PCategoryCreateRequest request){
+        entity.setName(request.name());
+        entity.setCode(slugify.slugify(request.name()));
         return entity;
     }
 }

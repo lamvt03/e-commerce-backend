@@ -1,5 +1,7 @@
 package com.ecommerce.enquiry;
 
+import com.ecommerce.enquiry.request.EnquiryCreateRequest;
+import com.ecommerce.exception.DuplicateResourceException;
 import com.ecommerce.exception.ResourceNotFoundException;
 import com.ecommerce.util.PaginationService;
 import com.ecommerce.util.model.PaginationDTO;
@@ -18,8 +20,12 @@ public class EnquiryService {
 
     private final PaginationService paginationService;
 
-    public EnquiryDTO createEnquiry(EnquiryDTO enquiryDTO) {
-        Enquiry enquiry = enquiryMapper.toEntity(enquiryDTO);
+    public EnquiryDTO createEnquiry(EnquiryCreateRequest request) {
+        Enquiry _enquiry = enquiryRepository.findByEmail(request.email())
+                .orElse(null);
+        if(_enquiry != null) throw new DuplicateResourceException("Enquiry with email [%s] already exists".formatted(request.email()));
+
+        Enquiry enquiry = enquiryMapper.toEntity(request);
         return enquiryMapper.toDto(
                 enquiryRepository.save(enquiry)
         );

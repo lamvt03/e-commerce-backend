@@ -1,5 +1,6 @@
 package com.ecommerce.exception.handler;
 
+import com.ecommerce.exception.ErrResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,10 +27,10 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         else
             msg += "Your token not valid";
 
-        Map<String, String> errMap = Map.of(
-                "code", String.valueOf(HttpStatus.UNAUTHORIZED.value()),
-                "status", HttpStatus.UNAUTHORIZED.getReasonPhrase(),
-                "msg", msg
+        ErrResponse resp = new ErrResponse(
+                msg,
+                HttpStatus.UNAUTHORIZED.value(),
+                HttpStatus.UNAUTHORIZED.getReasonPhrase()
         );
 
         // return for client
@@ -37,7 +38,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
-        out.print(new ObjectMapper().writeValueAsString(errMap));
+        out.print(new ObjectMapper().writeValueAsString(resp));
         out.flush();
     }
 }

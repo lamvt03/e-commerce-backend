@@ -1,4 +1,4 @@
-package com.ecommerce.cart;
+package com.ecommerce.cart.model;
 
 import com.ecommerce.cart.product.CProduct;
 import com.ecommerce.cart.product.CProductDTO;
@@ -9,8 +9,7 @@ import java.util.Set;
 public record CartDTO(
         Set<CProductDTO> products,
 
-        String couponCode,
-        String couponName,
+        CartCoupon coupon,
         double total,
         double totalAfterDiscount
 ) {

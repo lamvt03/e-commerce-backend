@@ -36,7 +36,7 @@ public class User implements UserDetails {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private UserRole role = UserRole.ADMIN;
+    private UserRole role = UserRole.USER;
 
     private boolean isEnable = true;
     private boolean isNonLocked = true;

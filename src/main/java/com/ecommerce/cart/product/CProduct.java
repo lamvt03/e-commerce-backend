@@ -1,8 +1,7 @@
 package com.ecommerce.cart.product;
 
 
-import com.ecommerce.cart.Cart;
-import com.ecommerce.product.model.Product;
+import com.ecommerce.cart.model.Cart;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;

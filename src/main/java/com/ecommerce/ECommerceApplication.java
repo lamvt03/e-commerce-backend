@@ -2,6 +2,7 @@ package com.ecommerce;
 
 import com.ecommerce.user.UserRepository;
 import com.ecommerce.user.model.User;
+import com.ecommerce.user.model.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -30,6 +31,7 @@ public class ECommerceApplication {
 //			user.setLastName("Lam");
 //			user.setEmail("votruonglam2109@gmail.com");
 //			user.setMobile("0886338217");
+//			user.setRole(UserRole.ADMIN);
 //			user.setPassword(passwordEncoder.encode("21092003@"));
 //            userRepository.save(user);
 //        };

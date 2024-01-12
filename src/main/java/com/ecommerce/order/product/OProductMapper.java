@@ -1,7 +1,6 @@
 package com.ecommerce.order.product;
 
 import com.ecommerce.cart.product.CProduct;
-import com.ecommerce.cart.product.CProductDTO;
 import com.ecommerce.exception.ResourceNotFoundException;
 import com.ecommerce.product.ProductService;
 import com.ecommerce.product.color.PColorRepository;

@@ -1,5 +1,6 @@
 package com.ecommerce.exception.handler;
 
+import com.ecommerce.exception.ErrResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,10 +21,10 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
-        Map<String, String> errMap = Map.of(
-                "code", String.valueOf(HttpStatus.FORBIDDEN.value()),
-                "status", HttpStatus.FORBIDDEN.getReasonPhrase(),
-                "msg", accessDeniedException.getMessage()
+        ErrResponse resp = new ErrResponse(
+                "You have no any permissions",
+                HttpStatus.FORBIDDEN.value(),
+                HttpStatus.FORBIDDEN.getReasonPhrase()
         );
 
         //return for client
@@ -31,7 +32,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
-        out.print(new ObjectMapper().writeValueAsString(errMap));
+        out.print(new ObjectMapper().writeValueAsString(resp));
         out.flush();
     }
 }

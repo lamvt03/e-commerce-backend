@@ -44,8 +44,7 @@ public class FavoriteService {
         return new FavoriteDTO(
                 favorite.getIsLiked(),
                 favorite.getLastModifiedAt(),
-                productId,
-                user.getId()
+                productId
         );
     }
 

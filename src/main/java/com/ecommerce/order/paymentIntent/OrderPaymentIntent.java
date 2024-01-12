@@ -1,8 +1,6 @@
 package com.ecommerce.order.paymentIntent;
 
-import com.ecommerce.common.AbstractEntity;
 import com.ecommerce.order.model.OrderMethod;
-import com.ecommerce.order.model.OrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;

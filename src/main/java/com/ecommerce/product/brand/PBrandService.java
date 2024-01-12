@@ -1,6 +1,7 @@
 package com.ecommerce.product.brand;
 
 import com.ecommerce.exception.ResourceNotFoundException;
+import com.ecommerce.product.brand.request.PBrandCreateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,8 +14,8 @@ public class PBrandService {
     private final PBrandRepository pBrandRepository;
     private final PBrandMapper pBrandMapper;
 
-    public PBrandDTO createBrand(PBrandDTO pBrandDTO) {
-        PBrand pBrand = pBrandMapper.toEntity(pBrandDTO);
+    public PBrandDTO createBrand(PBrandCreateRequest request) {
+        PBrand pBrand = pBrandMapper.toEntity(request);
         return pBrandMapper.toDto(
                 pBrandRepository.save(pBrand)
         );
@@ -26,11 +27,11 @@ public class PBrandService {
                 );
     }
 
-    public PBrandDTO updateProductBrand(Long id, PBrandDTO pBrandDTO) {
+    public PBrandDTO updateProductBrand(Long id, PBrandCreateRequest request) {
         PBrand pBrand = findPCategoryById(id);
         return pBrandMapper.toDto(
                 pBrandRepository.save(
-                        pBrandMapper.toEntity(pBrand, pBrandDTO)
+                        pBrandMapper.toEntity(pBrand, request)
                 )
         );
     }

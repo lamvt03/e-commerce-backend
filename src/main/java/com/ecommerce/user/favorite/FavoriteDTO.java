@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 public record FavoriteDTO(
         Boolean isLiked,
         LocalDateTime lastModifiedAt,
-        Long productId,
-        Long userId
+        Long productId
 ) {
 }
